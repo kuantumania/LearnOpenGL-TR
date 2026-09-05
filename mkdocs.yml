@@ -73,4 +73,5 @@ nav:
   - Giriş: index.md
   - 1. Başlarken:
       - OpenGL Nedir?: 01-baslarken/01-opengl-nedir.md
+      - Bir Pencere Oluşturma: 01-baslarken/02-pencere-olusturma.md
   - Katkıda Bulunma: katkida-bulunma.md
