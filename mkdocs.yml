@@ -94,4 +94,16 @@ nav:
       - Assimp Giriş: 03-model-yukleme/01-assimp.md
       - Mesh Sınıfı: 03-model-yukleme/02-mesh.md
       - Model Sınıfı: 03-model-yukleme/03-model.md
+  - 4. İleri Düzey OpenGL:
+      - Derinlik Testi: 04-ileri-opengl/01-derinlik-testi.md
+      - Kalıp Testi: 04-ileri-opengl/02-kalip-testi.md
+      - Harmanlama: 04-ileri-opengl/03-harmanlama.md
+      - Yüzey Ayıklama: 04-ileri-opengl/04-yuzey-ayiklama.md
+      - Çerçeve Tamponları: 04-ileri-opengl/05-cerceve-tamponlari.md
+      - Küp Haritaları: 04-ileri-opengl/06-kup-haritalari.md
+      - İleri Düzey Veri: 04-ileri-opengl/07-ileri-duzey-veri.md
+      - İleri Düzey GLSL: 04-ileri-opengl/08-ileri-duzey-glsl.md
+      - Geometri Shader: 04-ileri-opengl/09-geometri-shader.md
+      - Örnekleme: 04-ileri-opengl/10-ornekleme.md
+      - Kenar Yumuşatma: 04-ileri-opengl/11-kenar-yumusatma.md
   - Katkıda Bulunma: katkida-bulunma.md
