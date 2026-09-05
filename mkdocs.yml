@@ -76,4 +76,21 @@ nav:
       - Merhaba Pencere: 01-baslarken/03-merhaba-pencere.md
       - Merhaba Üçgen: 01-baslarken/04-merhaba-ucgen.md
       - Shader'lar: 01-baslarken/05-shaderlar.md
+      - Dokular (Textures): 01-baslarken/06-dokular.md
+      - Dönüşümler (Transformations): 01-baslarken/07-donusumler.md
+      - Koordinat Sistemleri: 01-baslarken/08-koordinat-sistemleri.md
+      - Kamera: 01-baslarken/09-kamera.md
+      - Özet ve Sözlük: 01-baslarken/10-ozet.md
+  - 2. Aydınlatma:
+      - Renkler: 02-aydinlatma/01-renkler.md
+      - Temel Aydınlatma: 02-aydinlatma/02-temel-aydinlatma.md
+      - Malzemeler: 02-aydinlatma/03-malzemeler.md
+      - Işık Haritaları: 02-aydinlatma/04-isik-haritalari.md
+      - Işık Kaynakları: 02-aydinlatma/05-isik-kaynaklari.md
+      - Çoklu Işıklar: 02-aydinlatma/06-coklu-isiklar.md
+      - Özet ve Sözlük: 02-aydinlatma/07-aydinlatma-ozeti.md
+  - 3. Model Yükleme:
+      - Assimp Giriş: 03-model-yukleme/01-assimp.md
+      - Mesh Sınıfı: 03-model-yukleme/02-mesh.md
+      - Model Sınıfı: 03-model-yukleme/03-model.md
   - Katkıda Bulunma: katkida-bulunma.md
