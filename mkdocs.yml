@@ -9,6 +9,7 @@ site_url: https://kuantumania.github.io/LearnOpenGL-TR/
 theme:
   name: material
   language: tr
+  custom_dir: overrides
   features:
     - navigation.instant
     - navigation.tracking

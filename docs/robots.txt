@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kuantumania.github.io/LearnOpenGL-TR/sitemap.xml

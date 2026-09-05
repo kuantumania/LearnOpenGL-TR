@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  <!-- SEO & Arama Motoru Optimizasyonu (Batuhan Dev / kuantumania) -->
+  <meta name="keywords" content="OpenGL Türkçe, LearnOpenGL Türkçe, Grafik Programlama, Oyun Motoru, C++, GLSL, PBR, Shader, Aydınlatma, Assimp, Framebuffers, Batuhan Dev, kuantumania, Bilgisayar Grafikleri, Technical Artist, Bilgisayar Mühendisliği, Oyun Geliştirme">
+  <meta name="author" content="Batuhan Dev">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook / LinkedIn / Discord Önizlemesi -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="LearnOpenGL TR">
+  <meta property="og:title" content="LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi">
+  <meta property="og:description" content="Joey de Vries'in efsanevi LearnOpenGL kaynağının 48 bölümlük eksiksiz Türkçe çevirisi. Modern C++, GLSL, PBR ve 3B oyun motoru mimarisi.">
+  <meta property="og:url" content="https://kuantumania.github.io/LearnOpenGL-TR/">
+  <meta property="og:image" content="https://kuantumania.github.io/LearnOpenGL-TR/img/getting-started/opengl.jpg">
+
+  <!-- Twitter / X Kart Önizlemesi -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi">
+  <meta name="twitter:description" content="Joey de Vries'in dünyaca ünlü LearnOpenGL kaynağının eksiksiz Türkçe çevirisi ve rehberi.">
+  <meta name="twitter:image" content="https://kuantumania.github.io/LearnOpenGL-TR/img/getting-started/opengl.jpg">
+
+  <!-- Google Arama Zengin Sonuçları (JSON-LD Yapısal Veri) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi",
+    "description": "Joey de Vries'in dünyaca ünlü LearnOpenGL kaynağının 48 bölümlük eksiksiz Türkçe çevirisi. Modern C++, GLSL, PBR ve 3B oyun motoru mimarisi.",
+    "provider": {
+      "@type": "Person",
+      "name": "Batuhan Dev",
+      "url": "https://github.com/kuantumania"
+    },
+    "inLanguage": "tr",
+    "isAccessibleForFree": true,
+    "url": "https://kuantumania.github.io/LearnOpenGL-TR/"
+  }
+  </script>
+{% endblock %}
