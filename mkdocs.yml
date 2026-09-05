@@ -1,0 +1,76 @@
+site_name: LearnOpenGL TR
+site_description: Joey de Vries'in efsanevi LearnOpenGL kaynağının modern Türkçe çevirisi ve grafik programlama rehberi.
+site_author: Batuhan Dev
+site_url: https://kuantumania.github.io/LearnOpenGL-TR/
+repo_name: kuantumania/LearnOpenGL-TR
+repo_url: https://github.com/kuantumania/LearnOpenGL-TR
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: tr
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: slate
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Açık temaya geç
+    - scheme: default
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Koyu temaya geç
+  font:
+    text: Inter
+    code: JetBrains Mono
+  logo: img/getting-started/opengl.jpg
+  favicon: img/getting-started/opengl.jpg
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - attr_list
+  - md_in_html
+  - tables
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Giriş: index.md
+  - 1. Başlarken:
+      - OpenGL Nedir?: 01-baslarken/01-opengl-nedir.md
+  - Katkıda Bulunma: katkida-bulunma.md

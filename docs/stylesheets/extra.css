@@ -1,0 +1,14 @@
+/* LearnOpenGL TR Özel Tema Düzenlemeleri */
+:root {
+  --md-primary-fg-color: #d84315;
+  --md-accent-fg-color: #ffab00;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #12141a;
+  --md-default-fg-color: #e4e7ec;
+}
+
+.md-typeset code {
+  border-radius: 4px;
+}
