@@ -4,6 +4,7 @@ site_author: Batuhan Dev
 repo_name: kuantumania/LearnOpenGL-TR
 repo_url: https://github.com/kuantumania/LearnOpenGL-TR
 edit_uri: edit/main/docs/
+site_url: https://kuantumania.github.io/LearnOpenGL-TR/
 
 theme:
   name: material
