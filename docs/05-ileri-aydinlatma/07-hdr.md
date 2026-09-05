@@ -1,46 +1,78 @@
-# Yüksek Dinamik Aralık (HDR & Tone Mapping) ☀️🕶️
+---
+title: Yüksek Dinamik Aralık (HDR)
+description: Kayan noktalı Framebuffer'lar (GL_RGBA16F), Reinhard ve Pozlama Ton Haritalama (Tone Mapping).
+---
 
-Varsayılan olarak bir çerçeve tamponunda renk değerleri $[0.0, 1.0]$ arasında sınırlandırılır (*clamped*). 
+# Yüksek Dinamik Aralık (HDR)
 
-Ancak gerçek dünyada bir mum ışığı ile Güneş ışığı arasındaki parlaklık farkı 1 milyar kattır! Eğer sahnenize çok güçlü bir ışık koyarsanız, $1.0$'ın üzerindeki tüm parlaklık değerleri beyaza kilitlenir ve tüm detaylar kaybolur:
+Standart bir Framebuffer'da her bir RGB kanalı 8 bit ile saklanır ($[0, 255]$ veya $[0.0, 1.0]$). Buna **Düşük Dinamik Aralık (LDR - Low Dynamic Range)** denir.
 
-![Aşırı Parlak Beyaz Kilitlenme](../img/advanced-lighting/hdr_clamped.png)
+Gerçek dünyada ise bir mum alevi ile bir stadyum projektörü veya Güneş aynı parlaklıkta değildir! Güneş'in parlaklığı $100.000$ iken iç mekan lambası $1.0$ olabilir. Eğer tüm değerleri $[0.0, 1.0]$ aralığına zorlarsanız, tüm parlak alanlar saf beyaza ($1.0$) doyar ve detaylar kaybolur.
 
-**HDR (High Dynamic Range)**, renkleri 8-bitlik sınırlı tamponlar yerine **16-bit ya da 32-bit kayan noktalı tamponlarda (Floating Point Framebuffers - `GL_RGBA16F`)** saklayarak $1.0$'dan çok daha büyük parlaklık değerlerini korumamızı sağlar!
+**Yüksek Dinamik Aralık (HDR - High Dynamic Range)**, parlaklık değerlerini sınırsız kayan noktalı sayılar olarak saklayıp sahneyi çizme ve ardından ekrana uygun şekilde sıkıştırma sanatıdır.
 
 ---
 
-## Ton Eşleme (Tone Mapping) 🎨
+## Kayan Noktalı Framebuffer (`GL_RGBA16F`)
 
-Monitörlerimiz nihayetinde $[0.0, 1.0]$ aralığında renk gösterebilir. HDR ile sakladığımız devasa parlaklık aralığını monitörün gösterebileceği aralığa estetik ve gerçekçi bir şekilde sıkıştırma işlemine **Ton Eşleme (Tone Mapping)** denir.
+Renk tamponumuzun $1.0$'dan büyük değerleri kırpmaması (clamp etmemesi) için kayan noktalı bir FBO oluştururuz:
 
-### 1. Reinhard Ton Eşleme
-Geliştiricisi Erik Reinhard'a ithafen adlandırılan en popüler ve zarif formüldür:
+```cpp linenums="1" title="HDR FBO Kurulumu"
+unsigned int hdrFBO;
+glGenFramebuffers(1, &hdrFBO);
 
-$$C_{mapped} = \frac{C}{C + 1.0}$$
+unsigned int colorBuffer;
+glGenTextures(1, &colorBuffer);
+glBindTexture(GL_TEXTURE_2D, colorBuffer);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-```glsl
-vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
-vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
 ```
 
-![Reinhard Sonucu](../img/advanced-lighting/hdr_reinhard.png)
-
-### 2. Pozlama (Exposure Tone Mapping)
-Tıpkı bir fotoğraf makinesinin diyafram açıklığı gibi, sahnenin pozlama süresini kontrol etmenizi sağlar:
-
-$$C_{mapped} = 1.0 - e^{-C \cdot exposure}$$
-
-```glsl
-vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
-```
-
-Pozlama parametresiyle oynayarak karanlık bir tünelden aydınlık bir güneşe çıktığınızda gözün kamaşmasını ve ışığa alışmasını simüle edebilirsiniz!
-
-![Pozlama Farkı](../img/advanced-lighting/hdr_exposure.png)
+Artık ışık şiddetlerimizi `vec3(100.0, 100.0, 100.0)` gibi devasa fiziksel değerlerle tanımlayabiliriz!
 
 ---
 
-Sırada ışık kaynaklarının etrafına sihirli bir ışıltı katan **Bölüm 8: "Bloom Efekti"** var!
+## Ton Haritalama (Tone Mapping)
 
-👉 **[Sonraki Bölüm: Bloom Efekti](08-bloom.md)**
+HDR tamponundaki sınırsız değerleri monitörün gösterebileceği $[0.0, 1.0]$ LDR aralığına sıkıştırma işlemine **Ton Haritalama (Tone Mapping)** denir.
+
+İki popüler yöntem:
+
+### 1. Reinhard Ton Haritalaması
+Erik Reinhard'ın klasik formülü; yüksek parlaklıkları yumuşak bir eğriyle $1.0$'a yaklaştırır:
+
+$$\text{Renk}_{\text{LDR}} = \frac{\text{Renk}_{\text{HDR}}}{\text{Renk}_{\text{HDR}} + 1.0}$$
+
+### 2. Pozlama (Exposure) Ton Haritalaması
+Fotoğraf makinelerindeki diyafram ve enstantane gibi çalışır:
+
+$$\text{Renk}_{\text{LDR}} = 1.0 - e^{-\text{Renk}_{\text{HDR}} \times \text{Exposure}}$$
+
+```glsl linenums="1" title="hdr_tone_mapping.frag"
+#version 330 core
+out vec4 FragColor;
+in vec2 TexCoords;
+
+uniform sampler2D hdrBuffer;
+uniform float exposure;
+
+void main()
+{             
+    const float gamma = 2.2;
+    vec3 hdrColor = texture(hdrBuffer, TexCoords).rgb;
+  
+    // Pozlama Ton Haritalama
+    vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+
+    // Gama düzeltmesi
+    mapped = pow(mapped, vec3(1.0 / gamma));
+  
+    FragColor = vec4(mapped, 1.0);
+}
+```
+
+Sonuç: Karanlık bir tünelden parlak güneşli bir güne çıktığınızda gözün veya kameranın ışığa alışması gibi dinamik pozlama efektleri uygulayabilirsiniz!

@@ -1,44 +1,103 @@
-# 2B Breakout Oyunu (Baştan Sona Oyun Geliştirme) 🕹️🧱
+---
+title: 2B Breakout Oyunu Mimarisi
+description: Sıfırdan C++ ve OpenGL ile eksiksiz 2B Tuğla Kırma oyunu; Sprite Renderer, AABB çarpışmaları, parçacık efektleri ve ses sistemi.
+---
 
-Öğrendiğimiz tüm bilgileri (Shader'lar, Dokular, Matrisler, Parçacıklar, Metin Çizimi ve Ses) taçlandırmanın en iyi yolu **tam teşekküllü bir video oyunu** geliştirmektir!
+# 2B Breakout Oyunu Mimarisi
 
-Bu bölümde 1976 Atari klasiği olan **Breakout (Tuğla Kırma Oyunu)**'nu modern C++ ve OpenGL ile sıfırdan inşa edeceğiz:
+LearnOpenGL rehberi boyunca öğrendiğimiz tüm grafik prensiplerini gerçek bir projede taçlandırmak için klasik **Breakout (Tuğla Kırma)** oyununu modern C++ ve saf OpenGL ile sıfırdan inşa ediyoruz!
 
-![Breakout Kapak](../img/in-practice/cover.png)
+Bu proje; oyun döngüsü, varlık yönetimi, 2B çizim motoru, fizik çarpışmaları ve görsel efektlerin bir araya geldiği eksiksiz bir oyun mimarisi örneğidir.
 
 ---
 
-## Oyun Mimarisi 🏛️
+## Oyun Mimarisi ve Sınıf Yapısı
 
-Profesyonel bir oyun mimarisi şu sınıflardan oluşur:
-1. **Game Sınıfı:** Oyun durumlarını (`GAME_ACTIVE`, `GAME_MENU`, `GAME_WIN`), seviyeleri ve tuş girdilerini yönetir.
-2. **SpriteRenderer Sınıfı:** 2B dokulu kareleri tek bir shader ile ekranda istenen konum, boyut ve açıda çizer.
-3. **GameObject Sınıfı:** Oyuncunun raketi, tuğlalar ve top gibi varlıkların konum ve hız vektörlerini saklar.
-4. **Çarpışma Algılama (Collision Detection):**
-   * **AABB - AABB Çarpışması:** Kutu ile kutu çarpışması.
-   * **Daire - AABB Çarpışması:** Topun tuğlaya veya rakete hangi kenarından çarptığını tam olarak hesaplar.
-5. **Parçacık Sistemi (Particle Generator):** Top hareket ederken arkasında sönen alev kuyruğu efekti bırakır!
-6. **Post-Processing:** Top belirli tuğlaları kırdığında ekran sallantısı (*Chaos effect*) ve renk bozulması efektleri devreye girer.
-
----
-
-## Sonuç: Kendi Oyununuzu Oynayın! 🎮
-
-Tüm parçaları bir araya getirdiğinizde ses efektleriyle, seviye geçişleriyle, parçacık efektleriyle dolu bağımlılık yapıcı bir 2B oyun ortaya çıkar!
+```mermaid
+classDiagram
+    Game --> ResourceManager : Dokular ve Shaderlar
+    Game --> SpriteRenderer : 2B Dörtgen Çizici
+    Game --> GameObject : Oyuncu Raketi & Top
+    Game --> GameLevel : Tuğla Haritası
+    Game --> ParticleGenerator : Top İz Efekti
+    Game --> PostProcessor : Ekran Sallama & Karışım
+```
 
 ---
 
-# BÜYÜK FİNAL: LearnOpenGL TR Tamamlandı! 🎓✨
+## 1. 2B Sprite Renderer (Sprite Çizici)
 
-**İnanılmaz bir maratonun sonuna geldiniz.** 
+Tüm 2B oyunlar ekranı kaplayan dokulu dikdörtgenlerden (Sprite) oluşur. Belleği yormamak için tek bir birim kare VAO oluşturur ve konum/boyut/dönme dönüşümlerini Model Matrisi ile shader'a aktarırız:
 
-İlk sayfada bir pencere açmayı bile bilmezken, şu anda:
-* Modern grafik işlem hattını,
-* 3B koordinat sistemlerini ve serbest kamera matematiğini,
-* Phong ve Blinn-Phong aydınlatma modellerini,
-* Assimp ile 3B model yüklemeyi,
-* Gölge haritalamayı ve normal haritalamayı,
-* Deferred Shading ve SSAO gibi ileri seviye teknikleri,
-* Ve AAA oyun motorlarının kullandığı **Fiziksel Tabanlı İşleme (PBR)** teorisini baştan sona kavradınız!
+```cpp linenums="1" title="sprite_renderer.cpp"
+void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec2 position, 
+                               glm::vec2 size, float rotate, glm::vec3 color)
+{
+    this->shader.Use();
+    glm::mat4 model = glm::mat4(1.0f);
 
-Artık kendi oyun motorunuzu yazabilir, modern grafik programlama dünyasında prestijli bir yer edinebilir ve bilgisayar grafiklerinin büyülü evreninde sınır tanımadan üretebilirsiniz!
+    // 1. Öteleme
+    model = glm::translate(model, glm::vec3(position, 0.0f));  
+
+    // 2. Kendi merkezi etrafında döndürme
+    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f)); 
+    model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f)); 
+    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+
+    // 3. Boyutlandırma
+    model = glm::scale(model, glm::vec3(size, 1.0f)); 
+
+    this->shader.SetMatrix4("model", model);
+    this->shader.SetVector3f("spriteColor", color);
+
+    glActiveTexture(GL_TEXTURE0);
+    texture.Bind();
+
+    glBindVertexArray(this->quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+```
+
+---
+
+## 2. AABB - Daire Çarpışma Tespiti (Collision Detection)
+
+Top (bir daire) ile tuğlalar (eksen hizalı dikdörtgenler / AABB) arasındaki çarpışmayı tespit etmek için, daire merkezine en yakın dikdörtgen noktasını **kırparak (clamp)** buluruz:
+
+```cpp linenums="1" title="Çarpışma Algoritması"
+Collision CheckCollision(BallObject &one, GameObject &two) // Daire - AABB
+{
+    glm::vec2 center(one.Position + one.Radius);
+    glm::vec2 aabb_half_extents(two.Size.x / 2.0f, two.Size.y / 2.0f);
+    glm::vec2 aabb_center(two.Position.x + aabb_half_extents.x, two.Position.y + aabb_half_extents.y);
+
+    glm::vec2 difference = center - aabb_center;
+    glm::vec2 clamped = glm::clamp(difference, -aabb_half_extents, aabb_half_extents);
+
+    glm::vec2 closest = aabb_center + clamped;
+    difference = closest - center;
+
+    if (glm::length(difference) < one.Radius)
+        return std::make_tuple(true, VectorDirection(difference), difference);
+    else
+        return std::make_tuple(false, UP, glm::vec2(0.0f, 0.0f));
+}
+```
+
+---
+
+## 3. Görsel Efektler ve Post-Processing
+
+Oyunun profesyonel görünmesi için 3 özel görsel sistem ekleriz:
+1. **Parçacık Üreteci (Particle Generator):** Top hareket ederken arkasında sönen ve küçülen ateş parçacıkları bırakır.
+2. **PostProcessor (Ekran Sallantısı & Efektler):** Oyuncu can kaybettiğinde veya blok kırıldığında tüm ekranı hafifçe sarsan (Chaos/Shake), renkleri tersine çeviren (Invert) veya bulanıklaştıran Framebuffer efektleri.
+3. **Güçlendirmeler (Power-ups):** Tuğlalardan düşen hızlandırma, ekstra can, yapışkan raket ve delici top bonusları.
+
+---
+
+## Sonuç: Başarılı Bir Oyun Geliştiricisi Yolculuğu!
+
+Bu projeyi tamamladığınızda yalnızca OpenGL komutlarını ezberlemiş olmazsınız; gerçek bir oyun mimarisinin veri yapılarını, matematiksel fiziğini, gölgelendirmesini ve performans optimizasyonunu baştan sona bizzat inşa etmiş olursunuz.
+
+Tebrikler, artık modern bilgisayar grafiklerinin zirvesindesiniz! 🚀

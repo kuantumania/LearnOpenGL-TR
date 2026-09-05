@@ -1,26 +1,71 @@
-# Paralaks Haritalama (Parallax Mapping) 🏔️
+---
+title: Paralaks Haritalama (Parallax Mapping)
+description: Derinlik haritaları ile doku koordinatlarını kaydırarak gerçek 3B oymalar ve derinlik yanılsaması (POM).
+---
 
-Normal haritalama yüzey ışıklandırmasını değiştirir ancak yüzeyin silüetini ve bakış açısına göre ötelenmesini değiştiremez. Bir tuğla duvara yandan eğik açıyla baktığınızda tuğlaların hâlâ dümdüz bir kağıt gibi olduğunu fark edersiniz.
+# Paralaks Haritalama (Parallax Mapping)
 
-**Paralaks Haritalama (Parallax Mapping)**, bir **Yükseklik Haritası (Height/Displacement Map)** kullanarak, kameranın bakış açısına göre **doku koordinatlarını kaydırır**! Böylece öndeki tuğla arkadaki çukuru fiziksel olarak kapatır (*occlusion*):
+Normal haritalama yüzeydeki aydınlatma açılarını değiştirir; ancak yüzeye yatık bir açıdan baktığınızda yüzeyin aslında dümdüz bir kağıt gibi olduğunu hemen anlarsınız. Bir çıkıntı diğer bir girintinin önünü kapatamaz (**Self-Occlusion** yoktur).
 
-![Paralaks Haritalama Şeması](../img/advanced-lighting/parallax_mapping.png)
+**Paralaks Haritalama (Parallax Mapping / Displacement Mapping)**, bakış açısına göre **doku koordinatlarını ($UV$) kaydırarak** yüzeyde gerçek bir geometrik derinlik ve katman etkisi oluşturur!
 
 ---
 
-## Paralaks Teknikleri 📈
+## Temel Fikir ve Yükseklik Haritası (Height Map)
 
-1. **Temel Paralaks Haritalama:** Tek bir yükseklik okumasıyla doku koordinatını kaydırır. Hızlıdır ancak dik açılarda bozulmalar üretir.
-2. **Steep Parallax Mapping (Dik Paralaks Haritalama):** Yüzeyi çok sayıda derinlik katmanına böler ve bakış ışınının yükseklik yüzeyini kestiği ilk katmanı adım adım arar:
-   ![Steep Parallax Şeması](../img/advanced-lighting/parallax_mapping_steep_parallax_mapping_diagram.png)
-3. **Parallax Occlusion Mapping (POM):** Kesilen iki katman arasında doğrusal enterpolasyon yaparak pürüzsüz ve kusursuz bir derinlik yanılsaması oluşturur!
+Paralaks haritalamada bir **Yükseklik Haritası (Height Map / Depth Map)** kullanılır:
+- Siyah ($0.0$): En derin oyuklar,
+- Beyaz ($1.0$): En yüksek çıkıntılar.
 
-![Parallax Occlusion Mapping Sonucu](../img/advanced-lighting/parallax_mapping_parallax_occlusion_mapping.png)
+Bakış yönü $\mathbf{V}$ yüzeye çarptığında, o noktadaki derinlik miktarına göre doku koordinatı bakış doğrultusunda geriye veya ileriye doğru kaydırılır:
 
-Sonuç: Tamamen düz bir yüzey, sanki 10 santimetre derinliğinde taş yarıklarıyla doluymuş gibi görünür!
+![Paralaks Haritalama Prensibi](../img/advanced-lighting/parallax_mapping_plane_height.png)
+
+$$\vec{P} = \frac{\mathbf{V}_{xy}}{\mathbf{V}_z} \cdot \text{scale}$$
 
 ---
 
-Sırada parlak ışıkların sınırlarını kaldıran **Bölüm 7: "Yüksek Dinamik Aralık (HDR)"** var!
+## Paralaks Tıkanma Haritalaması (Parallax Occlusion Mapping - POM)
 
-👉 **[Sonraki Bölüm: Yüksek Dinamik Aralık (HDR)](07-hdr.md)**
+Basit bir kaydırma dik açılarda bozulur. Modern oyunlarda kullanılan en gelişmiş teknik **Parallax Occlusion Mapping (POM)** yöntemidir.
+
+POM, yüzeyin içine doğru adım adım ($N$ katman) ışın fırlatır (Ray Marching). Işının derinliği yükseklik haritasının altına indiği an kesişim noktası iki katman arasında doğrusal olarak enterpole edilir:
+
+```glsl linenums="1" title="parallax_mapping.frag"
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
+{ 
+    // Açılı bakışta katman sayısını artır
+    const float minLayers = 8.0;
+    const float maxLayers = 32.0;
+    float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), viewDir), 0.0));  
+
+    float layerDepth = 1.0 / numLayers;
+    float currentLayerDepth = 0.0;
+
+    // Bakış doğrultusundaki kayma miktarı
+    vec2 P = viewDir.xy * heightScale; 
+    vec2 deltaTexCoords = P / numLayers;
+
+    vec2  currentTexCoords     = texCoords;
+    float currentDepthMapValue = texture(depthMap, currentTexCoords).r;
+
+    while(currentLayerDepth < currentDepthMapValue)
+    {
+        currentTexCoords -= deltaTexCoords;
+        currentDepthMapValue = texture(depthMap, currentTexCoords).r;  
+        currentLayerDepth += layerDepth;  
+    }
+
+    // Doğrusal İnterpolasyon (POM)
+    vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
+    float afterDepth  = currentDepthMapValue - currentLayerDepth;
+    float beforeDepth = texture(depthMap, prevTexCoords).r - currentLayerDepth + layerDepth;
+
+    float weight = afterDepth / (afterDepth - beforeDepth);
+    vec2 finalTexCoords = prevTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+    return finalTexCoords;
+}
+```
+
+Sonuç: Taşların kenarları birbirinin üstünü kapatır, duvarlar derin yarıklarla dolu gerçek bir 3B model gibi görünür!

@@ -1,34 +1,105 @@
-# Ekran Uzayı Ortam Kapatma (SSAO) 🌑🏛️
+---
+title: Ekran Uzayı Ortam Tıkanması (SSAO)
+description: Nesnelerin köşe ve çatlaklarındaki yumuşak temas gölgeleri (Ambient Occlusion), örnekleme yarıküresi ve gürültü döndürme.
+---
 
-Phong modelinde ortam ışığını (`ambient`) sahnenin her yerine eşit dağılan sabit bir katsayı olarak almıştık. 
+# Ekran Uzayı Ortam Tıkanması (Screen Space Ambient Occlusion - SSAO)
 
-Oysa gerçek dünyada duvarların köşeleri, mobilyaların altı, elbise kıvrımları ve taş çatlakları ortam ışığının girmekte zorlandığı dar alanlardır; buralar her zaman **daha koyu ve gölgelidir**:
+Temel aydınlatmada ortam ışığını (Ambient) sahnenin her yerine eşit dağılan sabit bir renk (`ambient = 0.1 * color`) olarak aldık. Ancak gerçek dünyada duvar dipleri, masa altları, boru kıvrımları ve köşe çatlakları ortam ışığını daha az alır ve buralarda **yumuşak temas gölgeleri** oluşur.
 
-![Crysis SSAO Karşılaştırması](../img/advanced-lighting/ssao_crysis.jpg)
-
-2007 yılında efsanevi oyun *Crysis* (Crytek stüdyosu) tarafından grafik dünyasına kazandırılan **SSAO (Screen Space Ambient Occlusion)**, geometriye ihtiyaç duymadan sadece ekrandaki derinlik tamponunu kullanarak gerçek zamanlı ortam gölgeleri üretir!
+Crytek tarafından *Crysis (2007)* oyunu için geliştirilen **SSAO**, sahne geometrisine ihtiyaç duymadan, yalnızca ekran tamponundaki derinlik ve normalleri kullanarak bu gölgeleri gerçek zamanlı hesaplar!
 
 ---
 
-## SSAO Mantığı 🔍
+## SSAO Nasıl Çalışır?
 
-Her bir pikselin etrafında yarım küre (*hemisphere*) şeklinde sanal örnekleme noktaları dağıtırız:
+Her pikselin etrafında, yüzey normali yönünde sanal bir **yarıküre (hemisphere)** oluştururuz ve bu yarıküre içine rastgele $N$ adet örnek nokta (sample kernel) serperiz:
 
-![Örnekleme Yarım Küresi](../img/advanced-lighting/ssao_hemisphere.png)
+![SSAO Örnekleme Yarıküresi](../img/advanced-lighting/ssao_hemisphere.png)
 
-Eğer bu örnekleme noktalarının çoğu komşu nesnelerin arkasında veya içinde kalıyorsa (örneğin iki duvarın birleştiği bir köşe), o pikselin etrafı kapalı demektir ve o piksele **koyu bir temas gölgesi** atanır!
-
----
-
-## SSAO Hattı ve Sonuç ✨
-
-SSAO algoritması G-Buffer'dan aldığı derinlik ve normallerle ham bir gölge haritası çıkarır, gürültüyü yok etmek için hafif bir bulanıklaştırma uygular ve nihai aydınlatmayla çarpar:
-
-![SSAO Ham Haritası](../img/advanced-lighting/ssao_without_blur.png)
-![SSAO Nihai Sahne Sonucu](../img/advanced-lighting/ssao_final.png)
-
-Sahnedeki nesneler bir anda yere oturur, derinlik ve gerçekçilik hissi doruk noktasına ulaşır!
+1. Her bir örnek noktanın derinliğini, o noktaya denk gelen yüzeyin derinlik tamponundaki değeriyle karşılaştırırız.
+2. Eğer örnek noktası yüzeyin **arkasında/altında** kalıyorsa, o yön kapalıdır (tıkanmıştır).
+3. Yarıküredeki kapalı örneklerin toplam sayısına göre bir **Tıkanma Faktörü (Occlusion Factor - $[0.0, 1.0]$)** hesaplanır.
 
 ---
 
-**TEBRİKLER!** 5. Modül olan **İleri Düzey Aydınlatma (Advanced Lighting)** dünyasını 10 bölümüyle eksiksiz tamamladınız!
+## 64 Noktalı Örnekleme Çekirdeği (C++)
+
+Örnek noktaların yüzeye yakın kısımlarda daha yoğun olması için karesel bir dağılım kullanırız:
+
+```cpp linenums="1" title="SSAO Çekirdeği Oluşturma"
+std::vector<glm::vec3> ssaoKernel;
+for (unsigned int i = 0; i < 64; ++i)
+{
+    glm::vec3 sample(
+        randomFloats(generator) * 2.0 - 1.0,
+        randomFloats(generator) * 2.0 - 1.0,
+        randomFloats(generator) // Yalnızca normal yönünde pozitif Z
+    );
+    sample = glm::normalize(sample);
+    sample *= randomFloats(generator);
+
+    // Merkeze yakınlığı artıran ölçekleme
+    float scale = float(i) / 64.0;
+    scale = lerp(0.1f, 1.0f, scale * scale);
+    sample *= scale;
+    ssaoKernel.push_back(sample);
+}
+```
+
+Örneklerin düzenli yapay çizgiler oluşturmasını engellemek için $4 \times 4$ boyutunda rastgele yön vektörleri içeren küçük bir **gürültü dokusu (noise texture)** ile çekirdeği rastgele döndürürüz.
+
+---
+
+## SSAO Fragment Shader'ı
+
+```glsl linenums="1" title="ssao.frag"
+#version 330 core
+out float FragColor;
+in vec2 TexCoords;
+
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform sampler2D texNoise;
+
+uniform vec3 samples[64];
+uniform mat4 projection;
+
+const vec2 noiseScale = vec2(800.0/4.0, 600.0/4.0); 
+
+void main()
+{
+    vec3 fragPos = texture(gPosition, TexCoords).xyz;
+    vec3 normal = normalize(texture(gNormal, TexCoords).rgb);
+    vec3 randomVec = normalize(texture(texNoise, TexCoords * noiseScale).xyz);
+
+    // Teğet uzay oluştur (Gram-Schmidt)
+    vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
+    vec3 bitangent = cross(normal, tangent);
+    mat3 TBN = mat3(tangent, bitangent, normal);
+
+    float occlusion = 0.0;
+    for(int i = 0; i < 64; ++i)
+    {
+        // Örnek noktasını dünya/görüş uzayına al
+        vec3 samplePos = TBN * samples[i]; 
+        samplePos = fragPos + samplePos * 0.5; // 0.5 yarıçap
+        
+        // Ekran koordinatlarına projekte et
+        vec4 offset = vec4(samplePos, 1.0);
+        offset = projection * offset;
+        offset.xyz /= offset.w;
+        offset.xyz = offset.xyz * 0.5 + 0.5;
+        
+        float sampleDepth = texture(gPosition, offset.xy).z;
+        
+        // Aralık kontrolü ve tıkanma hesabı
+        float rangeCheck = smoothstep(0.0, 1.0, 0.5 / abs(fragPos.z - sampleDepth));
+        occlusion += (sampleDepth >= samplePos.z + 0.025 ? 1.0 : 0.0) * rangeCheck;           
+    }
+    occlusion = 1.0 - (occlusion / 64.0);
+    FragColor = occlusion;
+}
+```
+
+Son adımda oluşan gürültüyü gidermek için $4 \times 4$ basit bir bulanıklık (blur) filtresi uygulanır. Ortam aydınlatmasını bu faktörle çarptığınızda (`ambient * ssao`), sahnedeki tüm nesnelerin köşe ve çatlakları adeta hayat bulur!

@@ -1,61 +1,98 @@
-# Gelişmiş Aydınlatma: Blinn-Phong Modeli ✨
+---
+title: Blinn-Phong Aydınlatma Modeli
+description: Klasik Phong aydınlatmasındaki 90 derece üzerindeki parlama kopmalarını çözen Blinn-Phong yarıvektör (halfway vector) tekniği.
+---
 
-2. Modülde öğrendiğimiz standart **Phong Aydınlatma Modeli**, görsel olarak gayet tatmin edici olsa da belirli açılarda fiziksel ve matematiksel bir kusura sahiptir.
+# Blinn-Phong Aydınlatma Modeli
 
-Bu bölümde klasik Phong modelinin sınırlarını inceleyecek ve modern oyun motorlarının (özellikle DirectX ve konsol oyunlarının) vazgeçilmez standardı olan **Blinn-Phong Aydınlatma Modelini** kodlayacağız!
+Temel aydınlatma bölümünde öğrendiğimiz klasik **Phong aydınlatma modeli**, bilgisayar grafiklerinin ilk dönemlerinde gerçekçi ışık simülasyonu için harika bir yaklaşımdı. Ancak belirli bakış açılarında, özellikle de yüzey pürüzlülüğü düşük ve bakış açısı yatık olduğunda, parlama (specular) bileşeninde **ani ve rahatsız edici ışık kopmaları (cutoff)** meydana gelir.
+
+Bu sorunu çözmek için James F. Blinn tarafından 1977 yılında geliştirilen **Blinn-Phong modeli**, günümüzde OpenGL ve DirectX uygulamalarında standart hale gelmiştir.
 
 ---
 
-## Klasik Phong Modelinin Kusuru ⚠️
+## Phong Modelindeki Sorun Nedir?
 
-Klasik Phong modelinde aynasal parlamayı hesaplamak için kameranın bakış yönü ($V$) ile ışığın yansıma vektörü ($R$) arasındaki açıyı kullanıyorduk:
+Klasik Phong modelinde speküler parlama, yansıyan ışık vektörü $\mathbf{R}$ ile kameraya bakan görüş vektörü $\mathbf{V}$ arasındaki açı ($\theta$) üzerinden hesaplanır:
 
-$$specular = (\max(V \cdot R, 0.0))^{shininess}$$
+$$\text{Speküler}_{\text{Phong}} = (\mathbf{R} \cdot \mathbf{V})^{\alpha}$$
 
-Eğer bakış yönü ile yansıma yönü arasındaki açı $90^\circ$'yi aşarsa, skaler çarpım sıfır veya negatif olur ve parlama **aniden bıçak gibi kesilir**:
+Eğer bakış vektörü ile yansıma vektörü arasındaki açı $90^\circ$'yi aşarsa, nokta çarpımı negatif olur ($\mathbf{R} \cdot \mathbf{V} < 0$) ve speküler katkı sıfıra eşitlenir (`max(dot(R, V), 0.0)`). 
 
-![Phong Modelinde 90 Derece Sınırı](../img/advanced-lighting/advanced_lighting_over_90.png)
-![Phong Parlama Sınırı](../img/advanced-lighting/advanced_lighting_phong_limit.png)
-
-Özellikle düşük parlama üssü (*shininess*) değerlerinde bu durum yüzeyde çirkin ve keskin bir halka oluşturur.
+Bu durum, özellikle ışık kaynağı nesneye çok yakınken veya yüzey parlaklık üssü ($\alpha$) küçükken, parlamanın bir anda bıçakla kesilmiş gibi yok olmasına neden olur!
 
 ---
 
-## Blinn-Phong Çözümü: Yarı-Yol Vektörü (Halfway Vector) 📐
+## Blinn-Phong ve Yarıvektör (Halfway Vector)
 
-1977 yılında Jim Blinn, bu sorunu çözmek için dâhice bir yöntem geliştirdi: Yansıma vektörü ($R$) yerine, **Işık Yönü ($L$) ile Bakış Yönünün ($V$) tam ortasındaki Yarı-Yol Vektörünü ($H$)** hesaplamak!
+Blinn-Phong modeli bu problemi, yansıyan ışın yerine **Yarıvektör (Halfway Vector - $\mathbf{H}$)** kavramını kullanarak çözer.
 
-$$H = \frac{L + V}{\|L + V\|}$$
+Yarıvektör, ışık yönü $\mathbf{L}$ ile bakış yönü $\mathbf{V}$ arasındaki açının tam ortasını gösteren birim vektördür:
 
-![Yarı Yol Vektörü](../img/advanced-lighting/advanced_lighting_halfway_vector.png)
+$$\mathbf{H} = \frac{\mathbf{L} + \mathbf{V}}{\|\mathbf{L} + \mathbf{V}\|}$$
 
-Aynasal parlamayı hesaplamak için artık yüzey normali ($N$) ile bu yarı-yol vektörü ($H$) arasındaki skaler çarpımı alırız:
+![Blinn-Phong Yarıvektör Geometrisi](../img/advanced-lighting/advanced_lighting_halfway_vector.png)
 
-$$specular = (\max(N \cdot H, 0.0))^{shininess}$$
+Yarıvektör $\mathbf{H}$ ile yüzey normali $\mathbf{N}$ birbirine ne kadar yakınsa, kameraya yansıyan ışık miktarı o kadar fazladır! Speküler denklemimiz şuna dönüşür:
 
-Bakış açısı ne olursa olsun, $N$ ile $H$ arasındaki açı asla yapay bir şekilde $90^\circ$'yi aşıp parlaklığı kesmez!
+$$\text{Speküler}_{\text{Blinn-Phong}} = (\mathbf{N} \cdot \mathbf{H})^{\alpha}$$
 
-![Phong vs Blinn-Phong Karşılaştırması](../img/advanced-lighting/advanced_lighting_comparrison.png)
+$\mathbf{N}$ ile $\mathbf{H}$ arasındaki açı hiçbir zaman $90^\circ$'yi aşmayacağı için, klasik Phong modelindeki o çirkin parlama kopmaları **tamamen yok olur**!
 
 ---
 
-## Fragment Shader'da Uygulama 💻
+## GLSL Fragment Shader Uygulaması
 
-```glsl
-// Blinn-Phong Aynasal Parlama
-vec3 lightDir   = normalize(lightPos - FragPos);
-vec3 viewDir    = normalize(viewPos - FragPos);
-vec3 halfwayDir = normalize(lightDir + viewDir);
+Klasik Phong ile Blinn-Phong arasında geçiş yapabilen modern bir fragment shader:
 
-float spec = pow(max(dot(Normal, halfwayDir), 0.0), 64.0);
-vec3 specular = lightColor * spec;
+```glsl linenums="1" title="blinn_phong.frag"
+#version 330 core
+out vec4 FragColor;
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+uniform sampler2D floorTexture;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+uniform bool blinn;
+
+void main()
+{           
+    vec3 color = texture(floorTexture, TexCoords).rgb;
+
+    // Ortam (Ambient)
+    vec3 ambient = 0.05 * color;
+
+    // Yayılımcı (Diffuse)
+    vec3 lightDir = normalize(lightPos - FragPos);
+    vec3 normal = normalize(Normal);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+
+    // Parlama (Specular)
+    vec3 viewDir = normalize(viewPos - FragPos);
+    float spec = 0.0;
+
+    if(blinn)
+    {
+        // Blinn-Phong Yarıvektör Hesabı
+        vec3 halfwayDir = normalize(lightDir + viewDir);  
+        spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+    }
+    else
+    {
+        // Klasik Phong Yansıma Hesabı
+        vec3 reflectDir = reflect(-lightDir, normal);
+        spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+    }
+    vec3 specular = vec3(0.3) * spec; // Parlama rengi
+
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
+}
 ```
 
-!!! tip "Shininess Değerine Dikkat!"
-    $N$ ile $H$ arasındaki açı, $V$ ile $R$ arasındaki açının yaklaşık yarısı kadardır. Bu nedenle klasik Phong ile aynı parlaklık boyutunu elde etmek için Blinn-Phong'da `shininess` değerini **2 ile 4 kat daha büyük** seçmelisiniz (örneğin Phong'da 8 ise Blinn-Phong'da 32).
-
----
-
-Sırada monitörlerin renkleri bozmasını engelleyeceğimiz **Bölüm 2: "Gama Düzeltmesi (Gamma Correction)"** var!
-
-👉 **[Sonraki Bölüm: Gama Düzeltmesi](02-gama-duzeltmesi.md)**
+> [!NOTE]
+> **Parlaklık Üssü (Shininess) Farkı:**
+> $\mathbf{N}$ ile $\mathbf{H}$ arasındaki açı, $\mathbf{R}$ ile $\mathbf{V}$ arasındaki açının yaklaşık yarısı kadardır. Bu yüzden klasik Phong ile aynı boyutta bir parlama elde etmek için Blinn-Phong'da üs değerini genellikle **2 ila 4 kat daha yüksek** seçeriz (örneğin Phong için 8 ise, Blinn-Phong için 32).

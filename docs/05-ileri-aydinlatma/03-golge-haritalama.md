@@ -1,82 +1,100 @@
-# Gölge Haritalama (Shadow Mapping) 🌑
+---
+title: Gölge Haritalama (Shadow Mapping)
+description: Yönsel ışıklar için iki aşamalı gölge haritası (Shadow Map), derinlik FBO'su, gölge aknesi ve PCF yumuşak gölgeler.
+---
 
-Gerçek dünyada ışığın olduğu her yerde **gölge** vardır. Gölgeler olmasa nesnelerin havada mı uçtuğu yoksa yere mi bastığı anlaşılmaz:
+# Gölge Haritalama (Shadow Mapping)
 
-![Gölgeli ve Gölgesiz Karşılaştırma](../img/advanced-lighting/shadow_mapping_with_without.png)
+Gölgeler, 3 boyutlu bir sahneye gerçekçilik ve derinlik kazandıran en önemli görsel unsurdur. Gölgeler olmadan nesnelerin havada mı uçtuğu yoksa zemine mi bastığı anlaşılamaz.
 
-Gerçek zamanlı grafiklerde gölgeleri simüle etmenin en popüler yöntemi **Gölge Haritalama (Shadow Mapping)** algoritmasıdır.
+Gerçek zamanlı grafiklerde gölge üretmenin en popüler ve standart algoritması **Gölge Haritalama (Shadow Mapping)** tekniğidir.
 
 ---
 
-## Gölge Haritalama Mantığı 💡
+## Gölge Haritalama Algoritmasının Mantığı
 
-Mantık dâhice ve basittir: **Işık kaynağının gördüğü hiçbir şey gölgede kalamaz; ışık kaynağının arkasında kalan her şey ise gölgededir!**
+Algoritma çok temel bir sezgiye dayanır: **Eğer bir nokta ışık kaynağının görüş alanındaysa aydınlıktır; eğer ışık ile o nokta arasında başka bir nesne varsa gölgededir!**
 
-![Gölge Haritalama Teorisi](../img/advanced-lighting/shadow_mapping_theory.png)
+Bunu tespit etmek için render işlemini **iki geçişte (two-pass)** yaparız:
 
-Bu algoritma 2 aşamada çalışır:
-1. **1. Aşama (Gölge Haritası Çıkarma):** Sahneyi kameranın gözünden değil, **ışık kaynağının gözünden** render ederiz. Renkleri umursamayız; sadece ışığa olan mesafeleri özel bir derinlik dokusuna (**Derinlik Haritası - Depth Map**) kaydederiz!
-2. **2. Aşama (Normal Render):** Sahneyi normal kameranın gözünden çizeriz. Her bir piksel için: "Bu pikselin ışığa olan mesafesi, ışığın derinlik haritasında kayıtlı değerden büyük mü?" diye bakarız. Eğer büyükse, arada bir engel vardır; yani piksel **GÖLGEDEDİR**!
+![Gölge Haritalama Mantığı](../img/advanced-lighting/shadow_mapping_theory.png)
 
-![Gölge Uzayları](../img/advanced-lighting/shadow_mapping_theory_spaces.png)
+1. **Geçiş 1 (Derinlik Haritası / Depth Map):**
+   - Kamerayı **ışık kaynağının yerine** koyarız.
+   - Sahneyi yalnızca derinlik tamponuna (Z-buffer) çizeriz. Renk çıktısına ihtiyaç yoktur.
+   - Oluşan dokuya **Gölge Haritası (Shadow Map)** denir. Bu harita, ışıktan görünen en yakın yüzeylerin mesafesini saklar.
+
+2. **Geçiş 2 (Sahne Renderı):**
+   - Sahneyi normal oyuncu kamerasından çizeriz.
+   - Her bir piksel için, o pikselin dünya koordinatını ışık uzayına projekte ederiz.
+   - Pikselin ışığa olan mesafesi ($z_{\text{current}}$), gölge haritasındaki en yakın mesafeden ($z_{\text{closest}}$) büyükse, araya başka bir nesne girmiş demektir: **Piksel gölgededir!**
 
 ---
 
-## 1. Aşama: Derinlik Haritası FBO'su 🏗️
+## 1. Geçiş: Derinlik FBO'su Kurulumu
 
-Işığın derinlik değerlerini kaydetmek için sadece derinlik eki olan bir FBO oluştururuz:
+Yalnızca derinlik bilgisi tutan bir Framebuffer (FBO) oluşturalım:
 
-```cpp
+```cpp linenums="1" title="Derinlik FBO Kurulumu"
+const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 unsigned int depthMapFBO;
 glGenFramebuffers(1, &depthMapFBO);
 
-const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 unsigned int depthMap;
 glGenTextures(1, &depthMap);
 glBindTexture(GL_TEXTURE_2D, depthMap);
-glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
-             SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-glDrawBuffer(GL_NONE); // Renk tamponuna ihtiyaç yok!
+glDrawBuffer(GL_NONE);
 glReadBuffer(GL_NONE);
 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 ```
 
 ---
 
-## 2. Aşama: Gölgeyi Hesaplama (Shadow Calculation) 📐
+## 2. Geçiş: Fragment Shader'da Gölge Testi ve Gölge Aknesi Çözümü
 
-Fragment Shader'da pikselin gölgede olup olmadığını sorgularız:
+Işık uzayındaki koordinatları $[-1, 1]$ aralığından $[0, 1]$ doku aralığına çevirip derinlik testi yaparız:
 
-```glsl
-float ShadowCalculation(vec4 fragPosLightSpace)
+```glsl linenums="1" title="shadow_mapping.frag"
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
 {
     // Perspektif bölme
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // [-1, 1] aralığını [0, 1] doku aralığına çevir
+    // [0, 1] aralığına dönüştür
     projCoords = projCoords * 0.5 + 0.5;
+
+    if(projCoords.z > 1.0)
+        return 0.0;
+
+    // Gölge Aknesi Çözümü (Eğim tabanlı Bias)
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+
+    // PCF (Percentage-Closer Filtering) ile Yumuşak Gölgeler
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += projCoords.z - bias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
     
-    float closestDepth = texture(shadowMap, projCoords.xy).r; 
-    float currentDepth = projCoords.z;
-    
-    // Gölge kontrolü:
-    float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
     return shadow;
 }
 ```
 
-### Gölge Kusurları ve Çözümleri:
-1. **Shadow Acne (Gölge Sivilceleri):** Çözünürlük kısıtları yüzünden yüzeylerde oluşan zebra çizgileri. Çözüm: **Gölge Sapması (Shadow Bias)** eklemek (`currentDepth - bias > closestDepth`).
-   ![Gölge Sapması](../img/advanced-lighting/shadow_mapping_acne_diagram.png)
-2. **PCF (Percentage-Closer Filtering):** Kenarları tırtıklı sert gölgeler yerine, komşu 9 pikselin ortalamasını alarak **ipek gibi yumuşak gölgeler (Soft Shadows)** üretmek!
-   ![PCF Yumuşak Gölgeler](../img/advanced-lighting/shadow_mapping_soft_shadows.png)
-
----
-
-Sırada ampul gibi noktasal ışıkların 360 derece gölge saçmasını sağlayan **Bölüm 4: "Noktasal Gölgeler (Point Shadows)"** var!
-
-👉 **[Sonraki Bölüm: Noktasal Gölgeler](04-noktasal-golgeler.md)**
+> [!TIP]
+> **PCF (Percentage Closer Filtering):**
+> Gölge haritasından tek bir piksel okumak kenarlarda tırtıklı, pikselli gölgelere yol açar. Komşu 9 pikseli ($3 \times 3$) örnekleyip ortalamasını aldığımızda harika, yumuşak gölge sınırları elde ederiz!
