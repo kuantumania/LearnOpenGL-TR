@@ -106,4 +106,15 @@ nav:
       - Geometri Shader: 04-ileri-opengl/09-geometri-shader.md
       - Örnekleme: 04-ileri-opengl/10-ornekleme.md
       - Kenar Yumuşatma: 04-ileri-opengl/11-kenar-yumusatma.md
+  - 5. İleri Düzey Aydınlatma:
+      - Blinn-Phong: 05-ileri-aydinlatma/01-blinn-phong.md
+      - Gama Düzeltmesi: 05-ileri-aydinlatma/02-gama-duzeltmesi.md
+      - Gölge Haritalama: 05-ileri-aydinlatma/03-golge-haritalama.md
+      - Noktasal Gölgeler: 05-ileri-aydinlatma/04-noktasal-golgeler.md
+      - Normal Haritalama: 05-ileri-aydinlatma/05-normal-haritalama.md
+      - Paralaks Haritalama: 05-ileri-aydinlatma/06-paralaks-haritalama.md
+      - Yüksek Dinamik Aralık (HDR): 05-ileri-aydinlatma/07-hdr.md
+      - Bloom: 05-ileri-aydinlatma/08-bloom.md
+      - Ertelenmiş Gölgelendirme: 05-ileri-aydinlatma/09-ertelenmis-gogelendirme.md
+      - SSAO: 05-ileri-aydinlatma/10-ssao.md
   - Katkıda Bulunma: katkida-bulunma.md
