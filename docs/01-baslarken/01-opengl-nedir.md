@@ -1,26 +1,26 @@
-# OpenGL Nedir? 📐
+# OpenGL Mimarisi ve Temel Kavramlar 📐
 
-Grafik programlama yolculuğumuza başlamadan önce, ilk olarak **OpenGL**'in tam olarak ne olduğunu tanımlamamız gerekir. 
+Bilgisayar grafikleri ve donanım hızlandırmalı görselleştirme alanındaki çalışmalara başlamadan önce, **OpenGL**'in yapısal tanımının doğru yapılması gerekmektedir. 
 
-Çoğu zaman OpenGL bir **API** (*Application Programming Interface - Uygulama Programlama Arayüzü*) olarak kabul edilir ve bize grafik ve görüntüleri işlemek için kullanabileceğimiz çok geniş bir fonksiyon koleksiyonu sunar. Ancak teknik olarak OpenGL'in kendisi doğrudan bir API değil; [Khronos Group](https://www.khronos.org/) tarafından geliştirilen ve bakımı yapılan bir **Spesifikasyondur (Şartnamedir)**.
+Yaygın kabule göre OpenGL bir **API** (*Application Programming Interface - Uygulama Programlama Arayüzü*) olarak nitelendirilmekte ve iki/üç boyutlu grafik verilerini manipüle etmek amacıyla kullanılan kapsamlı bir fonksiyon kümesi olarak tanımlanmaktadır. Ne var ki OpenGL, teknik açıdan doğrudan bir yazılım kütüphanesi değil; kâr amacı gütmeyen [Khronos Group](https://www.khronos.org/) konsorsiyumu tarafından geliştirilen ve denetlenen bir **teknik şartnamedir (specification)**.
 
 ![OpenGL Logosu](../img/getting-started/opengl.jpg){ align=right width=220 }
 
-Bir şartname olarak OpenGL, her bir fonksiyonun tam olarak ne yapması gerektiğini ve hangi çıktıyı üretmesi gerektiğini kurala bağlar; ancak bu fonksiyonların arka planda *nasıl* çalıştırılacağını (nasıl kodlanacağını) belirlemez. Bu spesifikasyonu alıp gerçek kodlara dökmek, ekran kartı üreticilerinin (NVIDIA, AMD, Intel, Apple vb.) görevidir. 
+Bir şartname olarak OpenGL; grafik işlem hattındaki her bir fonksiyonun alması gereken parametreleri, sergileyeceği kesin davranış biçimini ve üreteceği matematiksel çıktıları bağlayıcı standartlarla tanımlar. Buna karşın, bahsi geçen fonksiyonların donanım seviyesinde *nasıl* yürütüleceği şartname kapsamında yer almaz. Şartnamenin donanıma özgü olarak gerçeklenmesi (**implementation**), donanım üreticilerinin (NVIDIA, AMD, Intel, Apple vb.) sorumluluğundadır.
 
-Dolayısıyla bir ekran kartı satın aldığınızda ve sürücülerini kurduğunuzda, aslında o kart üreticisinin ilgili OpenGL şartnamesine göre bizzat C dilinde yazdığı kütüphaneleri (sürücüleri) sisteminize yüklemiş olursunuz.
+Sonuç olarak; bir grafik donanımı temin edildiğinde ve sürücü yazılımları sisteme kurulduğunda, aslında ilgili üreticinin OpenGL şartnamesine bağlı kalarak geliştirdiği donanıma özgü sürücü kütüphaneleri sisteme dahil edilmiş olur.
 
-!!! note "Ekran Kartı Sürücüleri ve Hatalar"
-    OpenGL implementasyonu bizzat ekran kartı üreticisi tarafından yazıldığı için, bazen şartnamede belirtilen standartlar ile üreticinin yazdığı kod arasında ufak farklılıklar veya sürücü hataları (*driver bugs*) oluşabilir. Bu tür durumlarda genellikle ekran kartı sürücülerinizi en son sürüme güncellemek ilk çözüm yoludur.
+!!! note "Üretici Sürücüleri ve Donanım Uyumluluğu"
+    OpenGL standartlarının somut uygulaması üreticiler tarafından yazıldığından, zaman zaman şartname standartları ile sürücü kodları arasında mikro düzeyde farklılıklar ya da yazılımsal hatalar (*driver bugs*) meydana gelebilmektedir. Grafik geliştirme süreçlerinde karşılaşılan beklenmedik donanım anomalilerinde, sürücü yazılımlarının güncelliğinin kontrol edilmesi ilk teknik adımdır.
 
 ---
 
-## Çekirdek Profil ve Doğrudan Mod (Core-profile vs Immediate mode)
+## Çekirdek Profil ve Doğrudan Yürütüm Modu (Core-profile vs. Immediate Mode)
 
-Eski günlerde OpenGL kullanmak **Doğrudan Mod** (*Immediate Mode* veya *Fixed Function Pipeline*) olarak bilinen bir yapıyla gerçekleştirilirdi. Bu yöntemde grafik çizimleri yapmak son derece kolaydı:
+OpenGL'in erken sürümlerinde geliştirme süreçleri, **Doğrudan Yürütüm Modu** (*Immediate Mode* ya da *Fixed Function Pipeline - Sabit Fonksiyon İşlem Hattı*) adı verilen mimari üzerinden yürütülmekteydi. Bu yapıda çizim komutları yüksek seviyeli ve doğrudan çağrılarla gerçekleştirilmekteydi:
 
 ```c
-// Eski OpenGL (Immediate Mode) Örneği - ARTIK KULLANILMIYOR:
+// Geleneksel OpenGL (Immediate Mode) Mimarisi - KULLANIMDAN KALDIRILMIŞTIR:
 glBegin(GL_TRIANGLES);
     glVertex3f(-0.5f, -0.5f, 0.0f);
     glVertex3f( 0.5f, -0.5f, 0.0f);
@@ -28,95 +28,96 @@ glBegin(GL_TRIANGLES);
 glEnd();
 ```
 
-Yukarıdaki kod yeni başlayan biri için çok basit ve anlaşılırdır; fakat **korkunç derecede verimsizdir**. Çünkü hesaplamaların büyük kısmı ekran kartında (GPU) değil işlemcide (CPU) döner ve her çizimde veriler CPU'dan GPU'ya teker teker aktarılır. Modern ekran kartları ise aynı anda milyonlarca matematiksel işlemi paralel yürütebilen devasa işlem canavarlarıdır.
+Bu yaklaşım pedagojik açıdan anlaşılır görünmekle birlikte, modern donanım kaynaklarını optimize etmekten uzaktır. Zira geometri verileri her karede ana bellekten (RAM / CPU) grafik belleğine (VRAM / GPU) tekrar tekrar transfer edilmekte, bu durum veri yolu üzerinde ciddi bant genişliği darboğazlarına (*bus bottleneck*) sebebiyet vermektedir. Modern Grafik İşlem Birimleri (GPU), geniş çapta paralelleştirilmiş SIMD (*Single Instruction, Multiple Data*) hesaplama modelleri üzerine kuruludur ve en yüksek başarım oranına verinin yerel GPU belleğinde toplu olarak işlenmesiyle ulaşır.
 
-Bu nedenle **OpenGL 3.2** sürümüyle birlikte Khronos Group, eski Immediate Mode mimarisini kullanımdan kaldırmaya (*deprecated*) karar verdi ve modern dünyayı temsil eden **Çekirdek Profil (Core-profile)** yapısını standart hale getirdi:
+Bu teknik zorunluluklar doğrultusunda **OpenGL 3.2** sürümü itibarıyla Khronos Group, Sabit Fonksiyon İşlem Hattı'nı resmi olarak **yürürlükten kaldırmış (deprecated)** ve çağdaş grafik programlamanın temelini oluşturan **Çekirdek Profil (Core-profile)** mimarisini zorunlu standart olarak ilan etmiştir:
 
-* **Core-profile (Çekirdek Profil):** Eski ve verimsiz fonksiyonların tamamen çöpe atıldığı, geliştiriciyi modern pratikleri (VBO, VAO, Shader'lar) kullanmaya zorlayan yapıdır.
-* Core-profile ile çalıştığınızda, eski fonksiyonlardan herhangi birini (örneğin `glBegin`) çağırmaya çalışırsanız OpenGL bir hata bayrağı fırlatır ve çizim yapmayı reddeder.
+* **Çekirdek Profil (Core-profile):** Eski ve verimsiz fonksiyonların kütüphaneden arındırıldığı, geliştiriciyi modern bellek yönetimi yapılarını (**VBO**, **VAO**) ve programlanabilir gölgelendiricileri (**GLSL**) kullanmaya zorlayan standarttır.
+* Çekirdek profil altında yapılandırılan bir bağlamda, yürürlükten kaldırılmış fonksiyonların (örneğin `glBegin` / `glEnd`) çağrılması durumunda OpenGL çalışma zamanı (*runtime*) hata üretecek ve çizim komutunu reddedecektir.
 
-Modern OpenGL'i öğrenmek ilk başta korkutucu görünebilir; çünkü ekrana tek bir üçgen çizmek için bile bellek tamponları tahsis etmeniz ve **GLSL (OpenGL Shading Language)** ile kendi gölgelendirici (*shader*) programlarınızı yazmanız gerekir. Fakat bu yaklaşım, modern GPU donanımı üzerinde size mutlak bir kontrol ve inanılmaz bir performans gücü sağlar.
+Modern OpenGL mimarisi, ekrana en temel geometrik ilkel olan üçgenin çizilmesinde dahi geliştiricinin bellek tahsisi yapmasını ve kendi gölgelendirici (*shader*) programlarını derlemesini gerektirmektedir. Bu yapı, öğrenme eğrisini dikleştirmekle beraber grafik donanımı üzerinde tam denetim, deterministik davranış ve azami hesaplama performansı sağlamaktadır.
 
-!!! tip "Biz Hangi Sürümü Kullanacağız?"
-    Bu rehber boyunca **OpenGL 3.3 (Core-profile)** standardını kullanacağız. 3.3 sürümü, modern OpenGL'in temel taşlarının oturduğu ve günümüzdeki tüm modern ekran kartları (hatta Intel dahili grafik kartları) tarafından eksiksiz desteklenen altın standarttır. 3.3'ü anladıktan sonra 4.x sürümlerine geçmek sadece birkaç yeni ek özelliği öğrenmekten ibarettir.
+!!! tip "Referans Standart: OpenGL 3.3 (Core Profile)"
+    Bu çalışmada referans sürüm olarak **OpenGL 3.3 (Core-profile)** esas alınacaktır. 3.3 sürümü, programlanabilir işlem hattının standartlaştığı ve günümüzdeki neredeyse tüm grafik donanımları (entegre grafik yongaları dahil) tarafından donanımsal düzeyde desteklenen evrensel temeldir. 3.3 sürümünün mimari prensipleri kavrandığında, OpenGL 4.x standartlarına ya da modern düşük seviyeli API'lara (Vulkan, DirectX 12) geçiş metodolojik olarak kolaylaşacaktır.
 
 ---
 
-## Uzantılar (Extensions)
+## Genişletilebilirlik ve Uzantı Mimarisi (Extensions)
 
-OpenGL'in en güçlü yönlerinden biri **Uzantı (Extension)** mekanizmasıdır. Bir ekran kartı üreticisi (örneğin NVIDIA) kartlarına yepyeni bir donanım özelliği veya optimizasyon geliştirdiğinde, yeni bir resmi OpenGL sürümünün Khronos tarafından onaylanmasını beklemek zorunda kalmaz.
+OpenGL spesifikasyonunun en önemli yapısal avantajlarından biri **Uzantı (Extension)** mekanizmasıdır. Donanım üreticileri, geliştirdikleri yeni bir donanımsal kabiliyet veya mikro-mimari optimizasyonunu Khronos Group'un konsensüs sürecine bağlı kalmaksızın derhal sektörün kullanımına sunabilmektedir.
 
-Üretici bu özelliği bir uzantı olarak sürücülerine ekler. Eğer uygulamanız o kartın üzerinde çalışıyorsa, kodunuz bu uzantının varlığını sorgulayabilir:
+Yeni bir yetenek, sürücü seviyesinde bir uzantı olarak tanımlanır. Yazılım geliştirici, çalışma zamanında uygulamanın çalıştığı donanımın ilgili uzantıyı destekleyip desteklemediğini sorgulayabilir:
 
 ```cpp
 if (GL_NV_path_rendering) {
-    // NVIDIA'nın özel path rendering uzantısını kullan!
+    // Üreticiye özgü optimize edilmiş yol tarama uzantısını çalıştır
 } else {
-    // Standart OpenGL yöntemiyle devam et.
+    // Standart OpenGL işlem adımlarını yürüt
 }
 ```
 
-Eğer bir uzantı sektörde çok sevilir ve diğer üreticiler tarafından da desteklenmeye başlarsa, Khronos Group o uzantıyı bir sonraki resmi OpenGL sürümünün çekirdek (*core*) parçası yapar.
+Yaygın kabul gören ve sektör genelinde donanım standardına dönüşen üretici uzantıları, Khronos Group tarafından incelenerek sonraki resmi OpenGL sürümlerinin çekirdek (*core*) standardına dahil edilir.
 
 ---
 
-## Durum Makinesi (State Machine)
+## Durum Makinesi Mimarisi (State Machine)
 
-OpenGL özünde devasa bir **Durum Makinesidir (State Machine)**. 
+OpenGL, kuramsal olarak devasa bir **Durum Makinesi (State Machine)** prensibiyle çalışır. 
 
-OpenGL'in o an nasıl davranacağını, ekrana ne çizeceğini veya hangi renkleri kullanacağını belirleyen değişkenler bütününe **OpenGL Bağlamı (OpenGL Context)** denir. OpenGL ile çalışırken genellikle şu döngüyü takip ederiz:
+Sistemin belirli bir anda nasıl davranacağını, rasterizasyon kurallarını, harmanlama (*blending*) fonksiyonlarını ve aktif tamponları saklayan değişkenler bütünü **OpenGL Bağlamı (OpenGL Context)** olarak adlandırılır. OpenGL mimarisi genelinde yürütülen operasyonlar iki ana kategoriye ayrılır:
 
-1. **Durumu Değiştir:** *"Şu dokuyu etkinleştir, arka planı koyu gri yap, derinlik testini aç."*
-2. **Eylemi Gerçekleştir (Çizim Yap):** *"Mevcut aktif duruma göre üçgenleri çiz."*
+1. **Durum Değiştirici Fonksiyonlar (*State-Changing Functions*):** Bağlamın mevcut durum parametrelerini günceller.
+2. **Durum Kullanıcı Fonksiyonlar (*State-Using Functions*):** O anki bağlam durumuna göre işlem hattını tetikler.
 
 ```cpp
-// 1. Durumu belirle (Durum Değiştirici Fonksiyon):
+// 1. Durum Parametresinin Tanımlanması (Durum Değiştirici):
 glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-// 2. Durumu kullan (Durum Kullanıcı Fonksiyon):
+// 2. Aktif Durum Üzerinden Eylemin Yürütülmesi (Durum Kullanıcı):
 glClear(GL_COLOR_BUFFER_BIT);
 ```
 
-Yukarıdaki kodda `glClearColor`, OpenGL'in durum makinesine arka planı temizlerken hangi rengi kullanacağını bildirir (durum değişti). Ardından `glClear` çağrıldığında, tanımlanan o anki durum baz alınarak ekran temizlenir.
+Yukarıdaki kod kesitinde `glClearColor` çağrısı, OpenGL bağlamına ekran temizleme rengini durum parametresi olarak işler. Akabinde yürütülen `glClear` çağrısı ise bağlamda saklanan bu güncel rengi kullanarak renk tamponunu temizler.
 
 ---
 
-## Nesneler (Objects)
+## Nesne Yönelimli Soyutlama Modeli (Objects)
 
-OpenGL kütüphaneleri C dilinde yazılmıştır; bu yüzden nesne yönelimli programlama dillerindeki (C++, C#) gibi `class` veya `struct` yapılarını doğrudan dışarı sunmaz. Bunun yerine **Nesne (Object)** soyutlamasını benzersiz kimlik numaraları (*ID*) üzerinden yürütür.
+OpenGL kütüphaneleri C standardında geliştirilmiştir; dolayısıyla C++ veya C# gibi dillerdeki yüksek seviyeli nesne yönelimli sınıfları (*classes*) bünyesinde barındırmaz. Bunun yerine bellek kaynaklarının yönetimi, **OpenGL Nesneleri (Objects)** adı verilen tanıtıcı kimlikler (*Identifiers / IDs*) üzerinden soyutlanır.
 
-OpenGL'de bir nesne, GPU belleğindeki bir veri kümesini temsil eder. Tipik bir nesne yönetim modeli şöyledir:
+OpenGL mimarisinde nesne yönetimi genel olarak şu şablonu takip eder:
 
 ```cpp
-// 1. Nesne için bellekte bir kimlik numarası (ID) oluştur:
+// 1. Bellek nesnesi için tanıtıcı bir kimlik (ID) tahsis edilmesi:
 unsigned int objectId = 0;
 glGenBuffers(1, &objectId);
 
-// 2. Nesneyi OpenGL bağlamındaki hedef yuvaya bağla (Bind et):
+// 2. Nesnenin bağlamdaki ilgili hedef yuvaya bağlanması (Binding):
 glBindBuffer(GL_ARRAY_BUFFER, objectId);
 
-// 3. Bağlanan nesnenin özelliklerini veya belleğini ayarla:
+// 3. Aktif yuvaya bağlanan nesnenin parametrelerinin ve verisinin yapılandırılması:
 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-// 4. İşi bitince hedef yuvayı boşa çıkar (Unbind et):
+// 4. İşlem tamamlandığında nesne bağlantısının çözülmesi (Unbinding):
 glBindBuffer(GL_ARRAY_BUFFER, 0);
 ```
 
-Bu model grafik dünyasının temelidir:
-* Önce bir ID üretilir (`glGen...`).
-* Ardından hedef yuvaya bağlanır (`glBind...`). Bir nesne bağlandığı andan itibaren yapılacak tüm ayar fonksiyonları doğrudan o nesneyi etkiler.
-* İşlem tamamlandığında 0 atanarak bağ çözülür (`Unbind`).
+Bu mekanizma, tüm modern grafik programlama modellerinin temel çalışma prensibidir:
+* Bellek nesnesi oluşturulur (`glGen...`),
+* Bağlama işlemiyle (`glBind...`) bağlamdaki aktif yuva ile ilişkilendirilir,
+* İlişkilendirilmiş yuva üzerinden veri transferi ve parametre konfigürasyonu yapılır,
+* Başka bir nesnenin kazara manipüle edilmesini önlemek amacıyla yuva bağlantısı sıfırlanır (`glBind...(0)`).
 
 ---
 
-## Özet ve Sıradaki Adım
+## Özet ve Sonraki Aşama
 
-Artık OpenGL'in:
-* Khronos Group tarafından belirlenen bir **şartname**,
-* Ekran kartı üreticileri tarafından sağlanan bir **sürücü**,
-* Verimsiz Immediate Mode yerine modern **Core-profile** ile çalışan bir sistem,
-* Ve temelde bir **Durum Makinesi** olduğunu öğrendik.
+Bu bölümde;
+* OpenGL'in bir kütüphane değil, Khronos Group tarafından denetlenen bağlayıcı bir **teknik şartname** olduğu,
+* Şartnamenin donanımsal gerçeklemesinin ekran kartı üreticilerinin **sürücü yazılımları** vasıtasıyla sağlandığı,
+* Yüksek başarım ve tam donanım denetimi için **Çekirdek Profil (Core-profile)** standardının zorunluluğu,
+* Sistem mimarisinin temelinde **Durum Makinesi** ve **Nesne Bağlama** modellerinin yattığı teorik düzeyde incelenmiştir.
 
-Artık teoriyi geride bırakıp kod yazmaya başlayabiliriz! Bir sonraki bölümde, OpenGL'in çizim yapabilmesi için gereken bir pencere ortamını (**GLFW**) ve fonksiyon işaretçilerini yükleyeceğimiz (**GLAD**) kütüphanelerini kurarak kendi ilk penceremizi oluşturacağız.
+Bir sonraki bölümde, grafik komutlarının icra edileceği platformlar arası pencere ve bağlam yönetim kütüphanesi olan **GLFW** ile donanıma özgü fonksiyon işaretçilerini yükleyeceğimiz **GLAD** kütüphanelerinin kurulumu ele alınacaktır.
 
-👉 **[Sıradaki Bölüm: Bir Pencere Oluşturma (Creating a window)](02-pencere-olusturma.md)**
+👉 **[Sonraki Bölüm: Geliştirme Ortamı ve Pencere Oluşturma (Creating a window)](02-pencere-olusturma.md)**
