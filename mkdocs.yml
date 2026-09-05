@@ -1,7 +1,6 @@
 site_name: LearnOpenGL TR
 site_description: Joey de Vries'in efsanevi LearnOpenGL kaynağının modern Türkçe çevirisi ve grafik programlama rehberi.
 site_author: Batuhan Dev
-site_url: https://kuantumania.github.io/LearnOpenGL-TR/
 repo_name: kuantumania/LearnOpenGL-TR
 repo_url: https://github.com/kuantumania/LearnOpenGL-TR
 edit_uri: edit/main/docs/
@@ -74,4 +73,5 @@ nav:
   - 1. Başlarken:
       - OpenGL Nedir?: 01-baslarken/01-opengl-nedir.md
       - Bir Pencere Oluşturma: 01-baslarken/02-pencere-olusturma.md
+      - Merhaba Pencere: 01-baslarken/03-merhaba-pencere.md
   - Katkıda Bulunma: katkida-bulunma.md
