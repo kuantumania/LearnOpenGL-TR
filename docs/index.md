@@ -1,40 +1,27 @@
-# Modern OpenGL ve Bilgisayar Grafikleri 🏛️
+# LearnOpenGL Türkçe'ye Hoş Geldiniz! 🎨
 
-Çağdaş bilgisayar grafikleri ve gerçek zamanlı render sistemleri literatürünün en prestijli eğitim kaynağı olan **LearnOpenGL**'in Türkçe edisyonuna hoş geldiniz.
+Modern bilgisayar grafikleri dünyasının en popüler ve sevilen eğitim kaynağı olan **LearnOpenGL**'in resmi nitelikteki Türkçe edisyonuna hoş geldiniz!
 
-Bu kaynak; çağdaş grafik işlem birimlerinin (GPU) çalışma mimarisini, **OpenGL 3.3+ (Çekirdek Profil)** standartlarını, **GLSL (OpenGL Shading Language)** programlanabilir gölgelendirici işlem hattını ve modern oyun/simülasyon motorlarının temelini oluşturan aydınlatma algoritmalarını (Phong, PBR, IBL) akademik ve metodolojik bir yaklaşımla ele almak üzere yapılandırılmıştır.
+Bu rehber; grafik programlamaya sıfırdan başlamak isteyenlerden modern bir oyun motoru mimarisi kurmayı hedefleyenlere kadar herkes için tasarlandı. Adım adım ilerleyerek modern **OpenGL 3.3 (Core Profile)** standartlarını, **GLSL** gölgelendiricilerini, gelişmiş ışıklandırma tekniklerini (Phong, PBR, IBL) ve 3 boyutlu sahne yönetimini birlikte keşfedeceğiz.
 
-<div class="admonition note">
-<p class="admonition-title">Proje ve Yayın Hakkında</p>
-<p>Bu çalışma, <strong>Batuhan Dev</strong> editörlüğünde; Türkiye bilgisayar mühendisliği, oyun tasarımı ve teknik sanat (Tech Art) ekosistemine dünya standartlarında, terminolojik açıdan tutarlı ve akademik yetkinliğe sahip kalıcı bir Türkçe başvuru kaynağı kazandırmak amacıyla yürütülmektedir.</p>
+<div class="admonition tip">
+<p class="admonition-title">Proje Hakkında</p>
+<p>Bu açık kaynaklı Türkçe çeviri projesi, <strong>Batuhan Dev</strong> liderliğinde Türkiye'deki tüm oyun geliştiricilerine, teknik sanatçılara ve grafik programlama meraklılarına eksiksiz ve modern bir başucu kaynağı sunmak amacıyla hayata geçirilmiştir.</p>
 </div>
 
 ---
 
-## 📚 Müfredat ve Kapsam
+## 🗺️ Bu Yolculukta Neler Öğreneceğiz?
 
-Dokümantasyon, temel prensiplerden ileri seviye fiziksel tabanlı render mimarilerine kadar birbirini izleyen 6 ana modülden oluşmaktadır:
-
-1. **Modül I: Temel Prensipler ve Grafik İşlem Hattı:**
-   OpenGL şartnamesi, durum makinesi yapısı, GLFW ve GLAD bağlam yönetimi, bellek tamponları (VBO, VAO, EBO), GLSL gölgelendirici mimarisi, doku haritalama (Texture Mapping), afin dönüşümler, homojen koordinat sistemleri ve serbest yönelimli 3B kamera matrisleri.
-
-2. **Modül II: Aydınlatma Modelleri (Lighting):**
-   Fotometrik renk kuramı, Phong ve Blinn-Phong aydınlatma modelleri, ortam (ambient), yayılma (diffuse) ve speküler (specular) yansıma bileşenleri, materyal özellikleri, ışık haritaları (diffuse/specular maps) ve çoklu ışık matematiği (yönlü ışık, nokta ışık ve projektör ışık kaynakları).
-
-3. **Modül III: Geometrik Model Entegrasyonu:**
-   Harici 3B varlıkların (`.obj`, `.fbx`, `.gltf`) sahneye dahil edilmesi, Assimp (*Open Asset Import Library*) kütüphanesinin entegrasyonu, veri yapıları ve nesne yönelimli Mesh / Model sınıf mimarisi.
-
-4. **Modül IV: İleri Düzey OpenGL Teknikleri:**
-   Z-Tamponu ve derinlik testi (Depth Testing), şablon testi (Stencil Testing), alfa harmanlama ve saydamlık (Blending), yüzey kırpma optimizasyonları (Face Culling), çerçeve tamponları (Framebuffers) ile ekran sonrası işlemler (Post-processing) ve kübik doku haritalama (Cubemaps / Skybox).
-
-5. **Modül V: İleri Seviye Aydınlatma ve Görsel Efektler:**
-   Gama düzeltmesi (Gamma Correction), derinlik haritası üzerinden gölge projeksiyonu (Shadow Mapping), teğet uzayı ve normal eşleme (Normal Mapping), paralaks eşleme (Parallax Mapping), Yüksek Dinamik Aralık (HDR), kamaşma (Bloom) ve Ekran Uzayı Ortam Karartması (SSAO).
-
-6. **Modül VI: Fiziksel Tabanlı Render (PBR - Physically Based Rendering):**
-   Mikroyüzey teorisi, Fresnel denklemleri, Cook-Torrance BRDF matematiksel modeli, radyometri ve Görüntü Tabanlı Aydınlatma (IBL - Image-Based Lighting).
+* **1. Başlarken:** OpenGL'in arkasındaki mantık, bir pencere oluşturma (GLFW & GLAD), render döngüsü, ilk üçgenimizi çizme, GLSL Shader temelleri, dokular (Textures), matris dönüşümleri, koordinat sistemleri ve 3B kamera kontrolü.
+* **2. Işıklandırma:** Işığın ve renklerin matematiği, Phong aydınlatma modeli, materyaller, ışık haritaları (Diffuse & Specular maps) ve sahnemizi canlandıracak çoklu ışık kaynakları (Directional, Point ve Spot lights).
+* **3. Model Yükleme:** Blender veya 3ds Max'te tasarladığınız 3B modelleri (`.obj`, `.fbx`) Assimp kütüphanesiyle sahnemize aktarma, Mesh ve Model sınıflarını yazma.
+* **4. İleri Seviye OpenGL:** Derinlik testi (Depth testing), şablon testi (Stencil testing), saydamlık ve karıştırma (Blending), yüz kırpma (Face culling), Framebuffer'lar ile ekran efektleri ve kübik haritalarla (Cubemaps) gökyüzü (Skybox) oluşturma.
+* **5. İleri Seviye Işıklandırma:** Gelişmiş gölgeler (Shadow Mapping), Normal haritaları (Normal Mapping), HDR, Bloom efektleri ve Ekran Uzayı Ortam Karartması (SSAO).
+* **6. PBR (Fiziksel Tabanlı Render):** Modern AAA oyun motorlarının (Unreal Engine, Unity) kullandığı gerçekçi fiziksel aydınlatma kuramı, Cook-Torrance BRDF ve Görüntü Tabanlı Aydınlatma (IBL).
 
 ---
 
-## 🎯 Başlarken
+## 🚀 Başlamaya Hazır mısınız?
 
-Grafik programlama alanındaki teorik ve pratik eğitiminize başlamak için sol panelde yer alan **[Modül I: OpenGL Nedir?](01-baslarken/01-opengl-nedir.md)** bölümünü inceleyebilirsiniz.
+O zaman hiç vakit kaybetmeden sol menüden ilk bölümümüz olan **[1. Başlarken -> OpenGL Nedir?](01-baslarken/01-opengl-nedir.md)** sayfasına tıklayın ve bu büyüleyici dünyaya adım atın!
