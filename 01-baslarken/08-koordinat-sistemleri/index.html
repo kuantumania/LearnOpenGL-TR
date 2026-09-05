@@ -1,0 +1,2966 @@
+
+<!doctype html>
+<html lang="tr" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Joey de Vries'in efsanevi LearnOpenGL kaynağının modern Türkçe çevirisi ve grafik programlama rehberi.">
+      
+      
+        <meta name="author" content="Batuhan Dev">
+      
+      
+        <link rel="canonical" href="https://kuantumania.github.io/LearnOpenGL-TR/01-baslarken/08-koordinat-sistemleri/">
+      
+      
+        <link rel="prev" href="../07-donusumler/">
+      
+      
+        <link rel="next" href="../09-kamera/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/getting-started/opengl.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Koordinat Sistemleri - LearnOpenGL TR</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+  <!-- SEO & Arama Motoru Optimizasyonu (Batuhan Dev / kuantumania) -->
+  <meta name="keywords" content="OpenGL Türkçe, LearnOpenGL Türkçe, Grafik Programlama, Oyun Motoru, C++, GLSL, PBR, Shader, Aydınlatma, Assimp, Framebuffers, Batuhan Dev, kuantumania, Bilgisayar Grafikleri, Technical Artist, Bilgisayar Mühendisliği, Oyun Geliştirme">
+  <meta name="author" content="Batuhan Dev">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Open Graph / Facebook / LinkedIn / Discord Önizlemesi -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="LearnOpenGL TR">
+  <meta property="og:title" content="LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi">
+  <meta property="og:description" content="Joey de Vries'in efsanevi LearnOpenGL kaynağının 48 bölümlük eksiksiz Türkçe çevirisi. Modern C++, GLSL, PBR ve 3B oyun motoru mimarisi.">
+  <meta property="og:url" content="https://kuantumania.github.io/LearnOpenGL-TR/">
+  <meta property="og:image" content="https://kuantumania.github.io/LearnOpenGL-TR/img/getting-started/opengl.jpg">
+
+  <!-- Twitter / X Kart Önizlemesi -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi">
+  <meta name="twitter:description" content="Joey de Vries'in dünyaca ünlü LearnOpenGL kaynağının eksiksiz Türkçe çevirisi ve rehberi.">
+  <meta name="twitter:image" content="https://kuantumania.github.io/LearnOpenGL-TR/img/getting-started/opengl.jpg">
+
+  <!-- Google Arama Zengin Sonuçları (JSON-LD Yapısal Veri) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "LearnOpenGL TR - Modern Türkçe Grafik Programlama Rehberi",
+    "description": "Joey de Vries'in dünyaca ünlü LearnOpenGL kaynağının 48 bölümlük eksiksiz Türkçe çevirisi. Modern C++, GLSL, PBR ve 3B oyun motoru mimarisi.",
+    "provider": {
+      "@type": "Person",
+      "name": "Batuhan Dev",
+      "url": "https://github.com/kuantumania"
+    },
+    "inLanguage": "tr",
+    "isAccessibleForFree": true,
+    "url": "https://kuantumania.github.io/LearnOpenGL-TR/"
+  }
+  </script>
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-orange" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#koordinat-sistemleri-coordinate-systems" class="md-skip">
+          Ana içeriğe geç
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Başlık">
+    <a href="../.." title="LearnOpenGL TR" class="md-header__button md-logo" aria-label="LearnOpenGL TR" data-md-component="logo">
+      
+  <img src="../../img/getting-started/opengl.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnOpenGL TR
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Koordinat Sistemleri
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-orange" data-md-color-accent="amber"  aria-label="Açık temaya geç"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Açık temaya geç" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-orange" data-md-color-accent="amber"  aria-label="Koyu temaya geç"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Koyu temaya geç" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Ara" placeholder="Ara" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Ara">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Temizle" aria-label="Temizle" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Arama başlatılıyor
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kuantumania/LearnOpenGL-TR" title="Depoya git" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kuantumania/LearnOpenGL-TR
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigasyon" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LearnOpenGL TR" class="md-nav__button md-logo" aria-label="LearnOpenGL TR" data-md-component="logo">
+      
+  <img src="../../img/getting-started/opengl.jpg" alt="logo">
+
+    </a>
+    LearnOpenGL TR
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kuantumania/LearnOpenGL-TR" title="Depoya git" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    kuantumania/LearnOpenGL-TR
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Giriş
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Başlarken
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    1. Başlarken
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-opengl-nedir/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenGL Nedir?
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-pencere-olusturma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bir Pencere Oluşturma
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-merhaba-pencere/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merhaba Pencere
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-merhaba-ucgen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merhaba Üçgen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-shaderlar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shader'lar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-dokular/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dokular (Textures)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-donusumler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dönüşümler (Transformations)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Koordinat Sistemleri
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Koordinat Sistemleri
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="İçindekiler">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      İçindekiler
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#buyuk-resim-koordinat-uzaylar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Büyük Resim: Koordinat Uzayları 🗺️
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Büyük Resim: Koordinat Uzayları 🗺️">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-yerel-uzay-local-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Yerel Uzay (Local Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-dunya-uzay-world-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Dünya Uzayı (World Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-gorunum-uzay-view-space-kamera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Görünüm Uzayı (View Space / Kamera)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-krpma-uzay-clip-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Kırpma Uzayı (Clip Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ekran-uzay-screen-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ekran Uzayı (Screen Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#izdusum-turleri-ortografik-vs-perspektif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        İzdüşüm Türleri: Ortografik vs Perspektif 📐
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="İzdüşüm Türleri: Ortografik vs Perspektif 📐">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ortografik-izdusum-orthographic-projection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Ortografik İzdüşüm (Orthographic Projection)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-perspektif-izdusum-perspective-projection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Perspektif İzdüşüm (Perspective Projection)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sag-el-kural-right-handed-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sağ El Kuralı (Right-Handed System) 🖐️
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hepsini-bir-araya-getirme-mvp-matrisi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hepsini Bir Araya Getirme: MVP Matrisi 🚀
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hepsini Bir Araya Getirme: MVP Matrisi 🚀">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shader-taraf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shader Tarafı
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-taraf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C++ Tarafı
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#daha-fazla-3b-gercek-bir-kup-cizmek" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daha Fazla 3B: Gerçek Bir Küp Çizmek! 📦
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#z-buffer-ve-derinlik-testi-depth-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Z-Buffer ve Derinlik Testi (Depth Testing) 🛡️
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Z-Buffer ve Derinlik Testi (Depth Testing) 🛡️">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#derinlik-testini-acma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derinlik Testini Açma
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#daha-fazla-kup-10-tane-donen-kup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daha Fazla Küp! (10 Tane Dönen Küp) 📦✨
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alstrmalar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alıştırmalar 🏋️
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-kamera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kamera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-ozet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Özet ve Sözlük
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Aydınlatma
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    2. Aydınlatma
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/01-renkler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renkler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/02-temel-aydinlatma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Temel Aydınlatma
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/03-malzemeler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Malzemeler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/04-isik-haritalari/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Işık Haritaları
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/05-isik-kaynaklari/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Işık Kaynakları
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/06-coklu-isiklar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Çoklu Işıklar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02-aydinlatma/07-aydinlatma-ozeti/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Özet ve Sözlük
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Model Yükleme
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    3. Model Yükleme
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03-model-yukleme/01-assimp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assimp Giriş
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03-model-yukleme/02-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mesh Sınıfı
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03-model-yukleme/03-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model Sınıfı
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. İleri Düzey OpenGL
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    4. İleri Düzey OpenGL
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/01-derinlik-testi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Derinlik Testi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/02-kalip-testi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kalıp Testi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/03-harmanlama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Harmanlama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/04-yuzey-ayiklama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Yüzey Ayıklama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/05-cerceve-tamponlari/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Çerçeve Tamponları
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/06-kup-haritalari/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Küp Haritaları
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/07-ileri-duzey-veri/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    İleri Düzey Veri
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/08-ileri-duzey-glsl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    İleri Düzey GLSL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/09-geometri-shader/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Geometri Shader
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/10-ornekleme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Örnekleme
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04-ileri-opengl/11-kenar-yumusatma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kenar Yumuşatma
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. İleri Düzey Aydınlatma
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    5. İleri Düzey Aydınlatma
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/01-blinn-phong/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blinn-Phong
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/02-gama-duzeltmesi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gama Düzeltmesi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/03-golge-haritalama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gölge Haritalama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/04-noktasal-golgeler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Noktasal Gölgeler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/05-normal-haritalama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Normal Haritalama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/06-paralaks-haritalama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Paralaks Haritalama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/07-hdr/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Yüksek Dinamik Aralık (HDR)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/08-bloom/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bloom
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/09-ertelenmis-gogelendirme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ertelenmiş Gölgelendirme
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05-ileri-aydinlatma/10-ssao/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSAO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. PBR (Fiziksel Tabanlı İşleme)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    6. PBR (Fiziksel Tabanlı İşleme)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../06-pbr/01-teori/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Teori
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../06-pbr/02-aydinlatma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PBR Aydınlatma
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../06-pbr/03-yaygin-isima/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IBL Yaygın Işınım
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../06-pbr/04-aynasal-ibl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aynasal IBL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Uygulamada
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    7. Uygulamada
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../07-uygulamada/01-hata-ayiklama/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hata Ayıklama
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../07-uygulamada/02-metin-cizimi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metin Çizimi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../07-uygulamada/03-2b-oyun-breakout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2B Breakout Oyunu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../katkida-bulunma/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Katkıda Bulunma
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="İçindekiler">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      İçindekiler
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#buyuk-resim-koordinat-uzaylar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Büyük Resim: Koordinat Uzayları 🗺️
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Büyük Resim: Koordinat Uzayları 🗺️">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-yerel-uzay-local-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Yerel Uzay (Local Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-dunya-uzay-world-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Dünya Uzayı (World Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-gorunum-uzay-view-space-kamera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Görünüm Uzayı (View Space / Kamera)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-krpma-uzay-clip-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Kırpma Uzayı (Clip Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ekran-uzay-screen-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ekran Uzayı (Screen Space)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#izdusum-turleri-ortografik-vs-perspektif" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        İzdüşüm Türleri: Ortografik vs Perspektif 📐
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="İzdüşüm Türleri: Ortografik vs Perspektif 📐">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ortografik-izdusum-orthographic-projection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Ortografik İzdüşüm (Orthographic Projection)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-perspektif-izdusum-perspective-projection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Perspektif İzdüşüm (Perspective Projection)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sag-el-kural-right-handed-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sağ El Kuralı (Right-Handed System) 🖐️
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hepsini-bir-araya-getirme-mvp-matrisi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hepsini Bir Araya Getirme: MVP Matrisi 🚀
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Hepsini Bir Araya Getirme: MVP Matrisi 🚀">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#shader-taraf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shader Tarafı
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-taraf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        C++ Tarafı
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#daha-fazla-3b-gercek-bir-kup-cizmek" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daha Fazla 3B: Gerçek Bir Küp Çizmek! 📦
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#z-buffer-ve-derinlik-testi-depth-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Z-Buffer ve Derinlik Testi (Depth Testing) 🛡️
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Z-Buffer ve Derinlik Testi (Depth Testing) 🛡️">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#derinlik-testini-acma" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Derinlik Testini Açma
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#daha-fazla-kup-10-tane-donen-kup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Daha Fazla Küp! (10 Tane Dönen Küp) 📦✨
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alstrmalar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alıştırmalar 🏋️
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="koordinat-sistemleri-coordinate-systems">Koordinat Sistemleri (Coordinate Systems) 🌐</h1>
+<p>Önceki bölümde, tepe noktalarını (<em>vertex</em>) matrisler yardımıyla nasıl dönüştüreceğimizi ve 2B bir sandığı ekranda nasıl döndüreceğimizi öğrendik. Ancak OpenGL gerçekte <strong>3 boyutlu</strong> bir dünyada çalışır. </p>
+<p>Peki, tanımladığımız 3 boyutlu koordinatlar en nihayetinde monitörümüzün <strong>2 boyutlu düz piksellerine</strong> nasıl dönüşüyor?</p>
+<p>OpenGL, her bir köşe noktasını Vertex Shader aşamasından sonra <strong>Normalleştirilmiş Cihaz Koordinatlarına (NDC - Normalized Device Coordinates)</strong>, yani <span class="arithmatex">\([-1.0, 1.0]\)</span> aralığına sıkıştırılmış olarak bekler. İşte 3B uzaydaki bir nesneyi alıp, kameranın açısına göre döndürüp, perspektif kazandırıp bu aralığa oturtma sürecine <strong>Koordinat Sistemleri Hattı (Pipeline)</strong> denir.</p>
+<p>Bu bölümde 3B grafiklerin kalbi olan <strong>MVP (Model - View - Projection)</strong> matrislerini öğrenecek, Z-Buffer (derinlik testi) kavramını kavrayacak ve sahnemizde dönen rengarenk 3B küpler oluşturacağız!</p>
+<hr />
+<h2 id="buyuk-resim-koordinat-uzaylar">Büyük Resim: Koordinat Uzayları 🗺️</h2>
+<p>Koordinatları bir uzaydan diğerine dönüştürmek için birkaç kritik matris kullanırız. En önemlileri şunlardır:</p>
+<ol>
+<li><strong>Yerel Uzay (Local Space / Object Space)</strong></li>
+<li><strong>Dünya Uzayı (World Space)</strong></li>
+<li><strong>Görünüm Uzayı (View Space / Camera Space)</strong></li>
+<li><strong>Kırpma Uzayı (Clip Space)</strong></li>
+<li><strong>Ekran Uzayı (Screen Space)</strong></li>
+</ol>
+<p>Bütün bu dönüşüm zincirini şu şema özetler:</p>
+<p><img alt="Koordinat Sistemleri Dönüşüm Hattı" src="../../img/getting-started/coordinate_systems.png" /></p>
+<p>Gelin bu adımları teker teker inceleyelim:</p>
+<h3 id="1-yerel-uzay-local-space">1. Yerel Uzay (Local Space)</h3>
+<p>Yerel uzay, nesnenizin kendi özel koordinat sistemidir; yani nesnenin "doğduğu" yerdir. Blender veya Maya gibi bir 3B modelleme yazılımında bir küp çizdiğinizi hayal edin. Küpün merkezi genellikle <span class="arithmatex">\((0,0,0)\)</span> noktasındadır. Modelinizin tüm köşeleri bu merkeze göre tanımlanır. Şimdiye kadar yazdığımız tüm tepe noktası koordinatları aslında yerel uzaydaydı.</p>
+<h3 id="2-dunya-uzay-world-space">2. Dünya Uzayı (World Space)</h3>
+<p>Eğer sahnenize eklediğiniz her nesneyi doğrudan yerel koordinatlarıyla çizdirseydiniz, bütün evler, ağaçlar ve karakterler <span class="arithmatex">\((0,0,0)\)</span> noktasında üst üste binerdi! 
+İşte <strong>Dünya Uzayı</strong>, tüm bu nesneleri ortak ve devasa bir sanal evrende konumlandırdığımız uzaydır. Nesnelerinizi yerel uzaydan dünya uzayına taşımak için <strong>Model Matrisi (Model Matrix)</strong> kullanılır (öteleme, döndürme ve ölçekleme işlemleri).</p>
+<h3 id="3-gorunum-uzay-view-space-kamera">3. Görünüm Uzayı (View Space / Kamera)</h3>
+<p>Görünüm uzayı, sahnedeki tüm nesnelerin <strong>kameranın gözünden</strong> nasıl göründüğünü temsil eder. Nesneleri dünya koordinatlarından kameranın baktığı açıya dönüştürmek için <strong>Görünüm Matrisi (View Matrix)</strong> kullanılır. </p>
+<div class="admonition tip">
+<p class="admonition-title">Kamera mı Hareket Ediyor, Dünya mı?</p>
+<p>OpenGL'de aslında fiziksel bir "kamera" nesnesi yoktur! Kamerayı ileri hareket ettirmek yerine, tüm dünyayı geriye doğru iteriz. Kamerayı sağa çevirmek yerine, dünyayı sola çeviririz. Görünüm matrisi tam olarak bu simülasyonu yapar.</p>
+</div>
+<h3 id="4-krpma-uzay-clip-space">4. Kırpma Uzayı (Clip Space)</h3>
+<p>Vertex Shader'ın sonunda OpenGL, tüm koordinatların belirli bir aralıkta (genellikle <span class="arithmatex">\(-1.0\)</span> ile <span class="arithmatex">\(1.0\)</span> arasında) olmasını ister. Bu aralığın dışında kalan her köşe noktası <strong>kırpılır (clipped)</strong> ve ekrana çizilmez. Koordinatları görünüm uzayından kırpma uzayına dönüştürmek için <strong>İzdüşüm Matrisi (Projection Matrix)</strong> kullanılır.</p>
+<p>İzdüşüm matrisi ayrıca koordinatlara bir <strong>Perspektif Bölme (Perspective Division)</strong> hazırlar; yani köşe noktasının <span class="arithmatex">\(x, y, z\)</span> bileşenleri homojen koordinat olan <span class="arithmatex">\(w\)</span> bileşenine bölünür (<span class="arithmatex">\(\frac{x}{w}, \frac{y}{w}, \frac{z}{w}\)</span>).</p>
+<h3 id="5-ekran-uzay-screen-space">5. Ekran Uzayı (Screen Space)</h3>
+<p>Kırpma uzayındaki koordinatlar artık Normalleştirilmiş Cihaz Koordinatlarındadır (NDC). Son adımda OpenGL, <code>glViewport</code> fonksiyonuyla belirlediğimiz ekran çözünürlüğünü kullanarak bu aralığı piksellere (örneğin 800x600) haritalar ve Rasterizer aşamasına gönderir.</p>
+<hr />
+<h2 id="izdusum-turleri-ortografik-vs-perspektif">İzdüşüm Türleri: Ortografik vs Perspektif 📐</h2>
+<p>Grafik dünyasında iki temel izdüşüm yöntemi kullanılır:</p>
+<h3 id="1-ortografik-izdusum-orthographic-projection">1. Ortografik İzdüşüm (Orthographic Projection)</h3>
+<p>Ortografik izdüşümde, paralel olan çizgiler sonsuza kadar paralel kalır. Uzaktaki nesneler ile yakındaki nesneler <strong>aynı boyutta</strong> görünür. Hiçbir derinlik küçülmesi yoktur:</p>
+<p><img alt="Ortografik Kesik Piramit (Frustum)" src="../../img/getting-started/orthographic_frustum.png" /></p>
+<p>Ortografik izdüşüm genellikle 2B oyunlarda, mimari CAD çizimlerinde ve izometrik strateji oyunlarında tercih edilir. GLM ile ortografik matris şöyle oluşturulur:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">proj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">ortho</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">800.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">600.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">);</span>
+</span></code></pre></div>
+<h3 id="2-perspektif-izdusum-perspective-projection">2. Perspektif İzdüşüm (Perspective Projection)</h3>
+<p>Gerçek dünyada gözlerimizin veya fotoğraf makinelerinin gördüğü dünyadır. Bir tren rayına baktığınızda, raylar ufukta tek bir noktada birleşiyormuş gibi görünür; uzaktaki nesneler daha <strong>küçük</strong> görünür:</p>
+<p><img alt="Perspektif Kesik Piramit" src="../../img/getting-started/perspective_frustum.png" /></p>
+<p>Perspektif izdüşüm, görüş alanını bir <strong>kesik piramit (frustum)</strong> olarak tanımlar. Bu piramidin tepe açısına <strong>Görüş Açısı (Field of View - FOV)</strong> denir:</p>
+<p><img alt="Perspektif ve Ortografik Karşılaştırması" src="../../img/getting-started/perspective_orthographic.png" /></p>
+<p>GLM'de perspektif matrisi oluşturmak son derece kolaydır:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">proj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">perspective</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="mf">45.0f</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">width</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">);</span>
+</span></code></pre></div>
+<ul>
+<li><strong>1. Parametre:</strong> Görüş açısı (FOV - derece cinsinden radyana çevrilir, genelde 45°).</li>
+<li><strong>2. Parametre:</strong> En-boy oranı (Aspect Ratio - ekran genişliği / yüksekliği).</li>
+<li><strong>3. Parametre:</strong> Yakın kırpma düzlemi (Near plane - örn. 0.1f).</li>
+<li><strong>4. Parametre:</strong> Uzak kırpma düzlemi (Far plane - örn. 100.0f). Bu mesafeden uzaktaki nesneler çizilmez.</li>
+</ul>
+<hr />
+<h2 id="sag-el-kural-right-handed-system">Sağ El Kuralı (Right-Handed System) 🖐️</h2>
+<p>OpenGL kural olarak <strong>Sağ El Koordinat Sistemini</strong> kullanır:</p>
+<ul>
+<li><strong>+X ekseni:</strong> Sağ yönü gösterir.</li>
+<li><strong>+Y ekseni:</strong> Yukarı yönü gösterir.</li>
+<li><strong>+Z ekseni:</strong> Ekrandan dışarıya, <strong>doğrudan size doğru</strong> bakar!</li>
+</ul>
+<p><img alt="Sağ El Kuralı" src="../../img/getting-started/coordinate_systems_right_handed.png" /></p>
+<p>Bu nedenle ekranda "içeriye / derine" doğru gitmek istiyorsanız, <strong>negatif Z ekseni (-Z)</strong> yönünde ilerlemelisiniz!</p>
+<hr />
+<h2 id="hepsini-bir-araya-getirme-mvp-matrisi">Hepsini Bir Araya Getirme: MVP Matrisi 🚀</h2>
+<p>Bir tepe noktasının yerel uzaydan ekrana ulaşma formülü şudur:</p>
+<div class="arithmatex">\[V_{clip} = M_{proj} \times M_{view} \times M_{model} \times V_{local}\]</div>
+<div class="admonition warning">
+<p class="admonition-title">Çarpım Sırasına Dikkat!</p>
+<p>Matrisler sağdan sola okunduğu için sırayla: Önce Model, sonra View, en son Projection matrisi uygulanır!</p>
+</div>
+<h3 id="shader-taraf">Shader Tarafı</h3>
+<p>Vertex Shader'ımıza bu 3 matrisi uniform olarak ekleyelim:</p>
+<div class="language-glsl highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#version 330 core</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">layout</span><span class="w"> </span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">aPos</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">layout</span><span class="w"> </span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="kt">vec2</span><span class="w"> </span><span class="n">aTexCoord</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">out</span><span class="w"> </span><span class="kt">vec2</span><span class="w"> </span><span class="n">TexCoord</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">mat4</span><span class="w"> </span><span class="n">model</span><span class="p">;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">mat4</span><span class="w"> </span><span class="n">view</span><span class="p">;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">uniform</span><span class="w"> </span><span class="kt">mat4</span><span class="w"> </span><span class="n">projection</span><span class="p">;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="p">{</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nb">gl_Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">projection</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">aPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="n">TexCoord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aTexCoord</span><span class="p">;</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="c-taraf">C++ Tarafı</h3>
+<p>Render döngüsü içerisinde bu matrisleri hesaplayıp GPU'ya gönderelim:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// 1. Model Matrisi: Nesneyi yere yatırıyoruz (-55 derece X ekseni)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="mf">-55.0f</span><span class="p">),</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">));</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// 2. View Matrisi: Kamerayı 3 birim geriye çekiyoruz (dünyayı -3 Z yönünde itiyoruz)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">view</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">view</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-3.0f</span><span class="p">));</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">// 3. Projection Matrisi: 45 derecelik perspektif frustum</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">projection</span><span class="p">;</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">projection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">perspective</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="mf">45.0f</span><span class="p">),</span><span class="w"> </span><span class="mf">800.0f</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">600.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">,</span><span class="w"> </span><span class="mf">100.0f</span><span class="p">);</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">// Shader'a gönder:</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="kt">int</span><span class="w"> </span><span class="n">modelLoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glGetUniformLocation</span><span class="p">(</span><span class="n">ourShader</span><span class="p">.</span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="s">"model"</span><span class="p">);</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">glUniformMatrix4fv</span><span class="p">(</span><span class="n">modelLoc</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">GL_FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">model</span><span class="p">));</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="kt">int</span><span class="w"> </span><span class="n">viewLoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glGetUniformLocation</span><span class="p">(</span><span class="n">ourShader</span><span class="p">.</span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="s">"view"</span><span class="p">);</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="n">glUniformMatrix4fv</span><span class="p">(</span><span class="n">viewLoc</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">GL_FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">view</span><span class="p">));</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="kt">int</span><span class="w"> </span><span class="n">projLoc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glGetUniformLocation</span><span class="p">(</span><span class="n">ourShader</span><span class="p">.</span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="s">"projection"</span><span class="p">);</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="n">glUniformMatrix4fv</span><span class="p">(</span><span class="n">projLoc</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">GL_FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">value_ptr</span><span class="p">(</span><span class="n">projection</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Sonuç olarak 2B düzlemimiz 3B uzayda derinlik kazanmış bir zemin gibi görünecektir:</p>
+<p><img alt="İlk 3B Düzlem Görünümü" src="../../img/getting-started/coordinate_systems_result.png" /></p>
+<hr />
+<h2 id="daha-fazla-3b-gercek-bir-kup-cizmek">Daha Fazla 3B: Gerçek Bir Küp Çizmek! 📦</h2>
+<p>2B düzlemler bir yere kadar heyecan verici. Hadi bunu gerçek bir <strong>3B Küpe</strong> dönüştürelim!</p>
+<p>Bir küpün 6 yüzü vardır ve her yüz 2 üçgenden oluşur (<span class="arithmatex">\(6 \times 2 = 12\)</span> üçgen). Toplamda <span class="arithmatex">\(12 \times 3 = 36\)</span> köşe noktasına (<em>vertex</em>) ihtiyacımız var:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">vertices</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">     </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="w">    </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Küpümüzü çizdirmek için <code>glDrawArrays</code> fonksiyonunu çağırırız:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">glDrawArrays</span><span class="p">(</span><span class="n">GL_TRIANGLES</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">36</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Küpü zamana bağlı döndürelim:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">glfwGetTime</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="mf">50.0f</span><span class="p">),</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Projeyi çalıştırdığınızda çok tuhaf bir görüntüyle karşılaşırsınız:</p>
+<p><img alt="Derinlik Testi Olmayan Küp" src="../../img/getting-started/coordinate_systems_no_depth.png" /></p>
+<p>Küpün arka yüzeyleri ön yüzeylerinin üzerini örtüyor gibi görünür! Neden?</p>
+<hr />
+<h2 id="z-buffer-ve-derinlik-testi-depth-testing">Z-Buffer ve Derinlik Testi (Depth Testing) 🛡️</h2>
+<p>OpenGL varsayılan olarak bir üçgenin diğer üçgenin arkasında mı yoksa önünde mi olduğunu kontrol etmez; sadece <strong>en son çizilen üçgeni</strong> ekran tampon belleğinin üzerine boyar (Buna ressam algoritması - <em>Painter's Algorithm</em> denir).</p>
+<p>Bu problemi çözmek için OpenGL <strong>Z-Buffer (Derinlik Tamponu)</strong> kullanır. Z-Buffer, her bir pikselin kameraya olan derinliğini saklar. Yeni bir parça (<em>fragment</em>) çizileceği zaman OpenGL:</p>
+<ol>
+<li>Yeni parçanın derinlik değerini Z-Buffer'daki mevcut değerle karşılaştırır.</li>
+<li>Eğer yeni parça kameraya <strong>daha yakınsa</strong>, pikseli ekrana boyar ve Z-Buffer'ı günceller.</li>
+<li>Eğer yeni parça arkada kalıyorsa, onu doğrudan <strong>yok sayar (discard)</strong>!</li>
+</ol>
+<h3 id="derinlik-testini-acma">Derinlik Testini Açma</h3>
+<p>Derinlik testini açmak için tek satır yeterlidir:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">glEnable</span><span class="p">(</span><span class="n">GL_DEPTH_TEST</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Ayrıca her kare çizilmeden önce sadece renk tamponunu değil, <strong>derinlik tamponunu da temizlemeliyiz</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">glClear</span><span class="p">(</span><span class="n">GL_COLOR_BUFFER_BIT</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">GL_DEPTH_BUFFER_BIT</span><span class="p">);</span>
+</span></code></pre></div>
+<p>Şimdi küpümüz mükemmel bir şekilde derinlik kazanır ve kusursuz görünür:</p>
+<p><img alt="Derinlik Testi ile Kusursuz Küp" src="../../img/getting-started/coordinate_systems_with_depth.png" /></p>
+<hr />
+<h2 id="daha-fazla-kup-10-tane-donen-kup">Daha Fazla Küp! (10 Tane Dönen Küp) 📦✨</h2>
+<p>Tek bir küp çizmek yerine sahnemize farklı konumlarda duran <strong>10 adet küp</strong> ekleyelim.</p>
+<p>Önce her bir küpün dünya uzayındaki pozisyonlarını tanımlayalım:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="w"> </span><span class="n">cubePositions</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.0f</span><span class="p">),</span><span class="w"> </span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">2.0f</span><span class="p">,</span><span class="w">  </span><span class="mf">5.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-15.0f</span><span class="p">),</span><span class="w"> </span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">-1.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.2f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.5f</span><span class="p">),</span><span class="w">  </span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">-3.8f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-12.3f</span><span class="p">),</span><span class="w">  </span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">2.4f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.4f</span><span class="p">,</span><span class="w"> </span><span class="mf">-3.5f</span><span class="p">),</span><span class="w">  </span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">-1.7f</span><span class="p">,</span><span class="w">  </span><span class="mf">3.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-7.5f</span><span class="p">),</span><span class="w">  </span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">1.3f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.5f</span><span class="p">),</span><span class="w">  </span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">1.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">2.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-2.5f</span><span class="p">),</span><span class="w"> </span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="w"> </span><span class="mf">1.5f</span><span class="p">,</span><span class="w">  </span><span class="mf">0.2f</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.5f</span><span class="p">),</span><span class="w"> </span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">-1.3f</span><span class="p">,</span><span class="w">  </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.5f</span><span class="p">)</span><span class="w">  </span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Render döngümüzün içinde aynı VAO'yu kullanarak bir for döngüsüyle 10 küpü de çizdirelim:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">glBindVertexArray</span><span class="p">(</span><span class="n">VAO</span><span class="p">);</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">for</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="p">{</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="w"> </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">mat4</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">);</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">translate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">cubePositions</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">20.0f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span><span class="p">;</span><span class="w"> </span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">rotate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5f</span><span class="p">));</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="n">ourShader</span><span class="p">.</span><span class="n">setMat4</span><span class="p">(</span><span class="s">"model"</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">);</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="n">glDrawArrays</span><span class="p">(</span><span class="n">GL_TRIANGLES</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">36</span><span class="p">);</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Sonuç muazzamdır:</p>
+<p><img alt="10 Adet Küp" src="../../img/getting-started/coordinate_systems_multiple_objects.png" /></p>
+<hr />
+<h2 id="alstrmalar">Alıştırmalar 🏋️</h2>
+<ol>
+<li><code>glm::perspective</code> fonksiyonundaki FOV (Görüş Açısı) değerini <code>10.0f</code> ve <code>120.0f</code> gibi uç değerlerle değiştirin. Sahnenin nasıl dramatik şekilde değiştiğini gözlemleyin.</li>
+<li>View matrisiyle oynayın: Kamerayı Z ekseni yerine X veya Y ekseninde hareket ettirerek sahneye farklı açılardan bakın.</li>
+<li>Sadece model matrisini kullanarak her 3. küpün (1. küp dahil: <code>i % 3 == 0</code>) zamana bağlı olarak kendi ekseni etrafında dönmesini sağlayın, diğer küpler ise statik kalsın!</li>
+</ol>
+<hr />
+<p>Tebrikler! 2 boyutlu pencerelerden çıkıp tamamen 3 boyutlu bir koordinat evrenine adım attınız! </p>
+<p>Ancak şu anda sahnede serbestçe dolaşamıyoruz. Klavyemiz ve faremizle bir video oyunu gibi sahnenin içinde özgürce gezinebileceğimiz bir <strong>Kamera Sistemi</strong> kurma vakti geldi!</p>
+<p>👉 <strong><a href="../09-kamera/">Sonraki Bölüm: Kamera (Camera)</a></strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Başa dön
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Kopyaland\u0131", "clipboard.copy": "Kopyala", "search.result.more.one": "Bu sayfada 1 tane daha", "search.result.more.other": "Bu sayfada # tane daha", "search.result.none": "E\u015fle\u015fen dok\u00fcman bulunamad\u0131", "search.result.one": "1 dok\u00fcman bulundu", "search.result.other": "# dok\u00fcman bulundu", "search.result.placeholder": "Aramaya ba\u015flamak i\u00e7in yaz\u0131n", "search.result.term.missing": "Eksik", "select.version": "Versiyon se\u00e7"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
