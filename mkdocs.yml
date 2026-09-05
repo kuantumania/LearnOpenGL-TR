@@ -117,4 +117,13 @@ nav:
       - Bloom: 05-ileri-aydinlatma/08-bloom.md
       - Ertelenmiş Gölgelendirme: 05-ileri-aydinlatma/09-ertelenmis-gogelendirme.md
       - SSAO: 05-ileri-aydinlatma/10-ssao.md
+  - 6. PBR (Fiziksel Tabanlı İşleme):
+      - PBR Teori: 06-pbr/01-teori.md
+      - PBR Aydınlatma: 06-pbr/02-aydinlatma.md
+      - IBL Yaygın Işınım: 06-pbr/03-yaygin-isima.md
+      - Aynasal IBL: 06-pbr/04-aynasal-ibl.md
+  - 7. Uygulamada:
+      - Hata Ayıklama: 07-uygulamada/01-hata-ayiklama.md
+      - Metin Çizimi: 07-uygulamada/02-metin-cizimi.md
+      - 2B Breakout Oyunu: 07-uygulamada/03-2b-oyun-breakout.md
   - Katkıda Bulunma: katkida-bulunma.md
